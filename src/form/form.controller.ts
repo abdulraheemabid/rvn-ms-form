@@ -2,8 +2,8 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UsePipes } from
 import { FormDTO, FormUpdateDTO } from './form.dto';
 import { FormService } from './form.service';
 import { Request } from 'express';
-import { DuplicateFormValidatorPipe } from 'src/pipes/duplicate-form-validator.pipe';
-import { AtLeastOneFieldValidatorPipe } from 'src/pipes/at-least-one-field-validator.pipe';
+import { DuplicateFormValidatorPipe } from 'src/form/pipes/duplicate-form-validator.pipe';
+import { AtLeastOneFieldValidatorPipe } from 'src/form/pipes/at-least-one-field-validator.pipe';
 
 @Controller('forms')
 export class FormController {

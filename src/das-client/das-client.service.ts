@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { DASContract, DASEndpointNames, DefinitionDTO, DefinitionIdDTO, DefinitionNameDTO, DefinitionResponseDTO, DefinitionUpdateDTO, IdDTO } from '@abdulraheemabid/rvn-shared';
-import { MSClient } from 'src/ms-client';
+import { MSClient } from 'src/das-client/ms-client';
 import { Request } from 'express';
 import { FormDTO, FormUpdateDTO } from 'src/form/form.dto';
 import { ConfigService } from 'src/config/config.service';

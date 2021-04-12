@@ -1,8 +1,8 @@
 import { FieldTypeEnum, getAllowedFieldTypesConcatedString } from "@abdulraheemabid/rvn-shared";
 import { Type } from "class-transformer";
 import { ArrayNotEmpty, IsArray, isBoolean, IsBoolean, IsEnum, IsNumber, IsObject, IsOptional, IsString, MinLength, Validate, ValidateNested } from "class-validator";
-import { DuplicateValuesValidator } from "src/validator/duplicate-values.validator";
-import { FieldArrayValuesValidator } from "src/validator/field-array-values.validator";
+import { DuplicateValuesValidator } from "src/form/validator/duplicate-values.validator";
+import { FieldArrayValuesValidator } from "src/form/validator/field-array-values.validator";
 
 
 export class FormDTO {

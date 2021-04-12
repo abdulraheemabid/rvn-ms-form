@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from 'src/config/config.service';
 import { DasClientModule } from 'src/das-client/das-client.module';
-import { ValidatorModule } from 'src/validator/validator.module';
+import { ValidatorModule } from 'src/form/validator/validator.module';
 import { FormController } from './form.controller';
 import { FormService } from './form.service';
 
