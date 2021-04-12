@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { FormModule } from './form/form.module';
 import { RecordModule } from './record/record.module';
 import { DasClientModule } from './das-client/das-client.module';
+import { ValidatorModule } from './validator/validator.module';
 
 @Module({
   controllers: [AppController],
@@ -11,7 +12,8 @@ import { DasClientModule } from './das-client/das-client.module';
   imports: [
     FormModule,
     RecordModule,
-    DasClientModule
+    DasClientModule,
+    ValidatorModule
   ],
 })
 export class AppModule { }

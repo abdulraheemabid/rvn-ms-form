@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
+import { DasClientModule } from './das-client/das-client.module';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
 import { UnhandledExceptionFilter } from './filters/unhandled-exception.filter';
 import { FormModule } from './form/form.module';
@@ -17,7 +18,9 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
 
+  useContainer(app.select(DasClientModule), { fallbackOnErrors: true });
   useContainer(app.select(FormModule), { fallbackOnErrors: true });
+  //useContainer(app, { fallbackOnErrors: true });
 
   await app.listen(3000);
 }

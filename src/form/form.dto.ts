@@ -1,14 +1,14 @@
 import { FieldTypeEnum, getAllowedFieldTypesConcatedString } from "@abdulraheemabid/rvn-shared";
 import { Type } from "class-transformer";
 import { ArrayNotEmpty, IsArray, IsBoolean, IsEnum, IsObject, IsOptional, IsString, MinLength, Validate, ValidateNested } from "class-validator";
-//import { DuplicateFormNameValidationPipe } from "src/pipes/duplicate-form-validation.pipe";
+import { DuplicateFormNameValidationPipe } from "src/pipes/duplicate-form-validation.pipe";
 import { DuplicateValuesValidationPipe } from "src/pipes/duplicate-values-validation.pipe";
 import { FieldArrayValuesValidationPipe } from "src/pipes/field-array-values-validation.pipe";
 
 export class FormDTO {
     @MinLength(3)
     @IsString()
-    //@Validate(DuplicateFormNameValidationPipe)
+    @Validate(DuplicateFormNameValidationPipe)
     name: string;
 
     @IsArray()

@@ -6,7 +6,7 @@ import { DasClientService } from './das-client.service';
 @Module({
     providers: [
         DasClientService,
-        ConfigService
+        ConfigService,
     ],
     imports: [
         ClientsModule.register([
@@ -14,10 +14,7 @@ import { DasClientService } from './das-client.service';
         ])
     ],
     exports: [
-        DasClientService,
-        ClientsModule.register([
-            { name: 'RVN_MS_CLIENT', transport: Transport.TCP }
-        ])
+        DasClientService
     ]
 })
 export class DasClientModule { }
