@@ -27,10 +27,10 @@ export class DasClientService {
         return this._MSClient.send(pattern, payload);
     }
 
-    async fetchDefinitionByName(name: string): Promise<DefinitionResponseDTO> {
-        let pattern = DASContract.getEndpointContractByName(DASEndpointNames.FETCH_DEFINITION_BY_NAME).pattern;
+    async fetchDefinitionsByName(name: string): Promise<DefinitionResponseDTO[]> {
+        let pattern = DASContract.getEndpointContractByName(DASEndpointNames.FETCH_DEFINITIONS_BY_NAME).pattern;
         let payload: DefinitionNameDTO = { name };
-        return this._MSClient.send(pattern, payload);
+        return await this._MSClient.send(pattern, payload);
     }
 
     async createDefinition(form: FormDTO, request: Request): Promise<IdDTO> {
@@ -47,7 +47,7 @@ export class DasClientService {
         let payload: DefinitionUpdateDTO = {
             ...form,
             request,
-            definitionId: id
+            definitionId: parseInt(id.toString())
         }
         return this._MSClient.send(pattern, payload);
     }
@@ -56,7 +56,6 @@ export class DasClientService {
         let payload: DefinitionIdDTO = { definitionId: defId };
         return this._MSClient.send(pattern, payload);
     }
-
     // async fetchAllEntries() { }
     // async fetchEntryById() { }
     // async createEntry() { }

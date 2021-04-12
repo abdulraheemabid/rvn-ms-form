@@ -11,9 +11,7 @@ import { ValidatorModule } from './validator/validator.module';
   providers: [AppService],
   imports: [
     FormModule,
-    RecordModule,
-    DasClientModule,
-    ValidatorModule
+    RecordModule
   ],
 })
 export class AppModule { }

@@ -19,7 +19,8 @@ export class FormService {
     }
 
     async fetchFormByName(name: string) {
-        return await this.clientService.fetchDefinitionByName(name);
+        const definitions = await this.clientService.fetchDefinitionsByName(name);
+        return definitions.length > 0 ? definitions[0] : null;
     }
 
     async createForm(form: FormDTO, request: Request) {

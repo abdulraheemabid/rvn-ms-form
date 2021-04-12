@@ -1,14 +1,13 @@
 import { FieldTypeEnum, getAllowedFieldTypesConcatedString } from "@abdulraheemabid/rvn-shared";
 import { Type } from "class-transformer";
-import { ArrayNotEmpty, IsArray, IsBoolean, IsEnum, IsObject, IsOptional, IsString, MinLength, Validate, ValidateNested } from "class-validator";
-import { DuplicateFormNameValidationPipe } from "src/pipes/duplicate-form-validation.pipe";
-import { DuplicateValuesValidationPipe } from "src/pipes/duplicate-values-validation.pipe";
-import { FieldArrayValuesValidationPipe } from "src/pipes/field-array-values-validation.pipe";
+import { ArrayNotEmpty, IsArray, isBoolean, IsBoolean, IsEnum, IsNumber, IsObject, IsOptional, IsString, MinLength, Validate, ValidateNested } from "class-validator";
+import { DuplicateValuesValidator } from "src/validator/duplicate-values.validator";
+import { FieldArrayValuesValidator } from "src/validator/field-array-values.validator";
+
 
 export class FormDTO {
     @MinLength(3)
     @IsString()
-    @Validate(DuplicateFormNameValidationPipe)
     name: string;
 
     @IsArray()
@@ -33,7 +32,7 @@ export class FormUpdateDTO {
     @ValidateNested({ each: true })
     @Type(() => FormFieldDTO)
     @ArrayNotEmpty()
-    @Validate(DuplicateValuesValidationPipe)
+    @Validate(DuplicateValuesValidator)
     fields?: FormFieldDTO[];
 
     @IsOptional()
@@ -42,11 +41,16 @@ export class FormUpdateDTO {
 }
 
 export class FormFieldDTO {
+    //need for update case
+    @IsOptional()
+    @IsNumber()
+    id?: number;
+
     @MinLength(3)
     @IsString()
     name: string;
 
-    @Validate(FieldArrayValuesValidationPipe)
+    @Validate(FieldArrayValuesValidator)
     @IsEnum(FieldTypeEnum, { message: `type must be: ${getAllowedFieldTypesConcatedString(" | ")}` })
     type: FieldTypeEnum;
 
@@ -58,11 +62,15 @@ export class FormFieldDTO {
     validationRegex?: string;
 
     @IsOptional()
-    @Validate(DuplicateValuesValidationPipe)
+    @Validate(DuplicateValuesValidator)
     arrayValues?: string[];
 
     @IsOptional()
     @IsObject()
     attributes?: JSON;
-}
 
+    //need for update case
+    @IsOptional()
+    @IsBoolean()
+    markDeleted?: boolean;
+}

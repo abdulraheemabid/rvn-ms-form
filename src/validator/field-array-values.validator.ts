@@ -3,11 +3,11 @@ import { Injectable } from '@nestjs/common';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 
 @Injectable()
-@ValidatorConstraint({ name: 'FieldArrayValuesValidationPipe', async: false })
-export class FieldArrayValuesValidationPipe implements ValidatorConstraintInterface {
+@ValidatorConstraint({ name: 'FieldArrayValuesValidator', async: false })
+export class FieldArrayValuesValidator implements ValidatorConstraintInterface {
     validate(val: any, args: ValidationArguments): boolean | Promise<boolean> {
         if (val === FieldTypeEnum.ARRAY) {
-            const arrayValues =args?.object["arrayValues"]; 
+            const arrayValues = args?.object["arrayValues"];
             return (
                 arrayValues
                 && Array.isArray(arrayValues)
