@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UsePipes } from '@nestjs/common';
+import { FormIdDTO } from 'src/form/form.dto';
 import { RecordDTO, RecordIdDTO, RecordUpdateDTO } from 'src/Record/Record.dto';
 import { RecordService } from 'src/Record/Record.service';
-import { Request } from 'express';
 import { RecordSchemaValidatorPipe } from './pipes/record-schema-validator.pipe';
 
 @Controller('forms/:formId/record')
@@ -9,8 +9,8 @@ export class RecordController {
     constructor(private service: RecordService) { }
 
     @Get()
-    async fetchAllRecord(@Param("defId") defId: number) {
-        return await this.service.fetchAllRecords(defId);
+    async fetchAllRecord(@Body() formIdDTO: FormIdDTO) {
+        return await this.service.fetchAllRecords(formIdDTO);
     }
 
     @Get(":id")

@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UsePipes } from '@nestjs/common';
-import { FormDTO, FormUpdateDTO } from './form.dto';
+import { FormDTO, FormIdDTO, FormUpdateDTO } from './form.dto';
 import { FormService } from './form.service';
 import { Request } from 'express';
 import { DuplicateFormValidatorPipe } from 'src/form/pipes/duplicate-form-validator.pipe';
@@ -16,26 +16,26 @@ export class FormController {
     }
 
     @Get(":id")
-    async fetchAFormsById(@Param("id") id: number) {
-        return await this.service.fetchFormById(id);
+    async fetchAFormsById(@Body() formIdDTO: FormIdDTO) {
+        return await this.service.fetchFormById(formIdDTO);
     }
 
     @Post()
     @UsePipes(DuplicateFormValidatorPipe)
-    async createForm(@Body() form: FormDTO, @Req() request: Request) {
-        return await this.service.createForm(form, request);
+    async createForm(@Body() formDTO: FormDTO) {
+        return await this.service.createForm(formDTO);
     }
 
     @Patch(":id")
     @UsePipes(DuplicateFormValidatorPipe)
     @UsePipes(AtLeastOneFieldValidatorPipe)
-    async updateForm(@Param("id") id: number, @Body() form: FormUpdateDTO, @Req() request: Request) {
-        return await this.service.updateForm(id, form, request);
+    async updateForm(@Body() formDTO: FormUpdateDTO) {
+        return await this.service.updateForm(formDTO);
     }
 
     @Delete(":id")
-    async deleteForm(@Param("id") id: number) {
-        return await this.service.deleteForm(id);
+    async deleteForm(@Body() formIdDTO: FormIdDTO) {
+        return await this.service.deleteForm(formIdDTO);
     }
 
 }

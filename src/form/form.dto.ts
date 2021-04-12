@@ -3,7 +3,7 @@ import { Type } from "class-transformer";
 import { ArrayNotEmpty, IsArray, isBoolean, IsBoolean, IsEnum, IsNumber, IsObject, IsOptional, IsString, MinLength, Validate, ValidateNested } from "class-validator";
 import { DuplicateValuesValidator } from "src/form/validator/duplicate-values.validator";
 import { FieldArrayValuesValidator } from "src/form/validator/field-array-values.validator";
-
+import { Request } from 'express';
 
 export class FormDTO {
     @MinLength(3)
@@ -19,9 +19,14 @@ export class FormDTO {
     @IsOptional()
     @IsObject()
     attributes?: JSON;
+
+    request: Request
 }
 
 export class FormUpdateDTO {
+    @IsNumber()
+    id: number;
+
     @IsOptional()
     @MinLength(3)
     @IsString()
@@ -38,6 +43,8 @@ export class FormUpdateDTO {
     @IsOptional()
     @IsObject()
     attributes?: JSON;
+
+    request: Request
 }
 
 export class FormFieldDTO {
@@ -73,4 +80,9 @@ export class FormFieldDTO {
     @IsOptional()
     @IsBoolean()
     markDeleted?: boolean;
+}
+
+export class FormIdDTO{
+    @IsNumber()
+    formId: number;
 }

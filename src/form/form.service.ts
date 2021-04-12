@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DasClientService } from 'src/das-client/das-client.service';
-import { FormDTO, FormUpdateDTO } from './form.dto';
+import { FormDTO, FormIdDTO, FormUpdateDTO } from './form.dto';
 import { Request } from 'express';
 
 @Injectable()
@@ -11,8 +11,8 @@ export class FormService {
         return await this.clientService.fetchAllDefinitions();
     }
 
-    async fetchFormById(id: number) {
-        return await this.clientService.fetchDefinitionById(id);
+    async fetchFormById(formIdDTO: FormIdDTO) {
+        return await this.clientService.fetchDefinitionById(formIdDTO);
     }
 
     async fetchFormByName(name: string) {
@@ -20,23 +20,23 @@ export class FormService {
         return definitions.length > 0 ? definitions[0] : null;
     }
 
-    async createForm(form: FormDTO, request: Request) {
+    async createForm(formDTO: FormDTO) {
         // FUTURE: will handle logic of creating nested or embeded forms
         // FUTURE: modifying entries if needed.
         // FUTURE: emit events for dw service
-        return await this.clientService.createDefinition(form, request);
+        return await this.clientService.createDefinition(formDTO);
     }
 
-    async updateForm(id: number, form: FormUpdateDTO, request: Request) {
+    async updateForm(formDTO: FormUpdateDTO) {
         // FUTURE: will handle logic of creating nested or embeded forms
         // FUTURE: modifying entries if needed.
         // FUTURE: emit events for dw service
-        return await this.clientService.updateDefinition(id, form, request);
+        return await this.clientService.updateDefinition(formDTO);
     }
-    async deleteForm(id: number) {
+    async deleteForm(formIdDTO: FormIdDTO) {
         // FUTURE: will handle logic of creating nested or embeded forms
         // FUTURE: modifying entries if needed.
         // FUTURE: emit events for dw service
-        return await this.clientService.deleteDefinition(id);
+        return await this.clientService.deleteDefinition(formIdDTO);
     }
 }

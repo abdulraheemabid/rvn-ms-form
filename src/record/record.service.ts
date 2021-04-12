@@ -2,13 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { DasClientService } from 'src/das-client/das-client.service';
 import { Request } from 'express';
 import { RecordDTO, RecordIdDTO, RecordUpdateDTO } from './record.dto';
+import { FormIdDTO } from 'src/form/form.dto';
 
 @Injectable()
 export class RecordService {
     constructor(private clientService: DasClientService) { }
 
-    async fetchAllRecords(defId: number) {
-        return await this.clientService.fetchAllEntries(defId);
+    async fetchAllRecords(formIdDTO: FormIdDTO) {
+        return await this.clientService.fetchAllEntries(formIdDTO);
     }
 
     async fetchRecordById(recordIdDTO: RecordIdDTO) {

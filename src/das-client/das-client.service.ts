@@ -3,7 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { DASContract, DASEndpointNames, DefinitionDTO, DefinitionIdDTO, DefinitionNameDTO, DefinitionResponseDTO, DefinitionUpdateDTO, EntryDTO, EntryIdInputDTO, EntryUpdateDTO, IdDTO } from '@abdulraheemabid/rvn-shared';
 import { MSClient } from 'src/das-client/ms-client';
 import { Request } from 'express';
-import { FormDTO, FormUpdateDTO } from 'src/form/form.dto';
+import { FormDTO, FormIdDTO, FormUpdateDTO } from 'src/form/form.dto';
 import { ConfigService } from 'src/config/config.service';
 import { RecordDTO, RecordIdDTO, RecordUpdateDTO } from 'src/record/record.dto';
 
@@ -22,9 +22,9 @@ export class DasClientService {
         return this._MSClient.send(pattern, {});
     }
 
-    async fetchDefinitionById(formId: number): Promise<DefinitionResponseDTO> {
+    async fetchDefinitionById(formIdDTO: FormIdDTO): Promise<DefinitionResponseDTO> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.FETCH_DEFINITION_BY_ID).pattern;
-        let payload: DefinitionIdDTO = { definitionId: formId };
+        let payload: DefinitionIdDTO = { definitionId: formIdDTO.formId };
         return this._MSClient.send(pattern, payload);
     }
 
@@ -34,34 +34,34 @@ export class DasClientService {
         return await this._MSClient.send(pattern, payload);
     }
 
-    async createDefinition(form: FormDTO, request: Request): Promise<IdDTO> {
+    async createDefinition(formDTO: FormDTO): Promise<IdDTO> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.CREATE_DEFINITION).pattern;
         let payload: DefinitionDTO = {
-            ...form,
-            request
+            ...formDTO
         }
         return this._MSClient.send(pattern, payload);
     }
 
-    async updateDefinition(id: number, form: FormUpdateDTO, request: Request): Promise<IdDTO> {
+    async updateDefinition(formDTO: FormUpdateDTO): Promise<IdDTO> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.UPDATE_DEFINITION).pattern;
+        let definitionId = formDTO.id;
+        delete formDTO.id;
         let payload: DefinitionUpdateDTO = {
-            ...form,
-            request,
-            definitionId: parseInt(id.toString())
+            ...formDTO,
+            definitionId
         }
         return this._MSClient.send(pattern, payload);
     }
 
-    async deleteDefinition(formId: number): Promise<IdDTO> {
+    async deleteDefinition(formIdDTO: FormIdDTO): Promise<IdDTO> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.DELETE_DEFINITION).pattern;
-        let payload: DefinitionIdDTO = { definitionId: formId };
+        let payload: DefinitionIdDTO = { definitionId: formIdDTO.formId };
         return this._MSClient.send(pattern, payload);
     }
 
-    async fetchAllEntries(formId: number): Promise<EntryDTO[]> {
+    async fetchAllEntries(formIdDTO: FormIdDTO): Promise<EntryDTO[]> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.FETCH_ALL_ENTRIES).pattern;
-        let payload: DefinitionIdDTO = { definitionId: formId };
+        let payload: DefinitionIdDTO = { definitionId: formIdDTO.formId };
         return this._MSClient.send(pattern, payload);
     }
 
