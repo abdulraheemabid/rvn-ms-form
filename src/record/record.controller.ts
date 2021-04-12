@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UsePipes } from '@nestjs/common';
-import { RecordDTO } from 'src/Record/Record.dto';
+import { RecordDTO, RecordIdDTO, RecordUpdateDTO } from 'src/Record/Record.dto';
 import { RecordService } from 'src/Record/Record.service';
 import { Request } from 'express';
 import { RecordSchemaValidatorPipe } from './pipes/record-schema-validator.pipe';
@@ -14,24 +14,24 @@ export class RecordController {
     }
 
     @Get(":id")
-    async fetchARecordById(@Param("defId") defId: number, @Param("id") id: number) {
-        return await this.service.fetchRecordById(defId, id);
+    async fetchARecordById(@Body() recordIdDTO: RecordIdDTO) {
+        return await this.service.fetchRecordById(recordIdDTO);
     }
 
     @Post()
     @UsePipes(RecordSchemaValidatorPipe)
-    async createRecord(@Param("defId") defId: number, @Body() record: RecordDTO, @Req() request: Request) {
-        return await this.service.createRecord(defId, record, request);
+    async createRecord(@Body() recordDTO: RecordDTO) {
+        return await this.service.createRecord(recordDTO);
     }
 
     @Patch(":id")
     @UsePipes(RecordSchemaValidatorPipe)
-    async updateRecord(@Param("defId") defId: number, @Param("id") id: number, @Body() record: RecordDTO, @Req() request: Request) {
-        return await this.service.updateRecord(defId, id, record, request);
+    async updateRecord(@Body() recordDTO: RecordUpdateDTO) {
+        return await this.service.updateRecord(recordDTO);
     }
 
     @Delete(":id")
-    async deleteRecord(@Param("defId") defId: number, @Param("id") id: number) {
-        return await this.service.deleteRecord(defId, id);
+    async deleteRecord(@Body() recordIdDTO: RecordIdDTO) {
+        return await this.service.deleteRecord(recordIdDTO);
     }
 }

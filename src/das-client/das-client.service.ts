@@ -5,7 +5,7 @@ import { MSClient } from 'src/das-client/ms-client';
 import { Request } from 'express';
 import { FormDTO, FormUpdateDTO } from 'src/form/form.dto';
 import { ConfigService } from 'src/config/config.service';
-import { RecordDTO } from 'src/record/record.dto';
+import { RecordDTO, RecordIdDTO, RecordUpdateDTO } from 'src/record/record.dto';
 
 @Injectable()
 export class DasClientService {
@@ -22,9 +22,9 @@ export class DasClientService {
         return this._MSClient.send(pattern, {});
     }
 
-    async fetchDefinitionById(defId: number): Promise<DefinitionResponseDTO> {
+    async fetchDefinitionById(formId: number): Promise<DefinitionResponseDTO> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.FETCH_DEFINITION_BY_ID).pattern;
-        let payload: DefinitionIdDTO = { definitionId: defId };
+        let payload: DefinitionIdDTO = { definitionId: formId };
         return this._MSClient.send(pattern, payload);
     }
 
@@ -53,48 +53,49 @@ export class DasClientService {
         return this._MSClient.send(pattern, payload);
     }
 
-    async deleteDefinition(defId: number): Promise<IdDTO> {
+    async deleteDefinition(formId: number): Promise<IdDTO> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.DELETE_DEFINITION).pattern;
-        let payload: DefinitionIdDTO = { definitionId: defId };
+        let payload: DefinitionIdDTO = { definitionId: formId };
         return this._MSClient.send(pattern, payload);
     }
 
-    async fetchAllEntries(defId: number): Promise<EntryDTO[]> {
+    async fetchAllEntries(formId: number): Promise<EntryDTO[]> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.FETCH_ALL_ENTRIES).pattern;
-        let payload: DefinitionIdDTO = { definitionId: defId };
+        let payload: DefinitionIdDTO = { definitionId: formId };
         return this._MSClient.send(pattern, payload);
     }
 
-    async fetchEntryById(defId: number, recordId: number): Promise<EntryDTO> {
+    async fetchEntryById(recordIdDTO: RecordIdDTO): Promise<EntryDTO> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.FETCH_ENTRY_BY_ID).pattern;
-        let payload: EntryIdInputDTO = { id: recordId, definitionId: defId };
+        let payload: EntryIdInputDTO = { id: recordIdDTO.entryId, definitionId: recordIdDTO.formId };
         return this._MSClient.send(pattern, payload);
     }
 
-    async createEntry(defId: number, record: RecordDTO, request: Request): Promise<IdDTO> {
+    async createEntry(recordDTO: RecordDTO): Promise<IdDTO> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.CREATE_ENTRY).pattern;
+        let definitionId = recordDTO.formId;
+        delete recordDTO.formId;
         let payload: EntryDTO = {
-            ...record,
-            request,
-            definitionId: defId
+            ...recordDTO,
+            definitionId
         }
         return this._MSClient.send(pattern, payload);
     }
 
-    async updateEntry(defId: number, entryId: number, record: RecordDTO, request: Request): Promise<IdDTO> {
+    async updateEntry(recordDTO: RecordUpdateDTO): Promise<IdDTO> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.CREATE_ENTRY).pattern;
+        let definitionId = recordDTO.formId;
+        delete recordDTO.formId;
         let payload: EntryUpdateDTO = {
-            ...record,
-            request,
-            id: entryId,
-            definitionId: defId
+            ...recordDTO,
+            definitionId
         }
         return this._MSClient.send(pattern, payload);
     }
 
-    async deleteEntry(defId: number, recordId: number): Promise<IdDTO> {
+    async deleteEntry(recordIdDTO: RecordIdDTO): Promise<IdDTO> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.DELETE_ENTRY).pattern;
-        let payload: EntryIdInputDTO = { id: recordId, definitionId: defId };
+        let payload: EntryIdInputDTO = { id: recordIdDTO.entryId, definitionId: recordIdDTO.formId };
         return this._MSClient.send(pattern, payload);
     }
 }
