@@ -1,10 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { DASContract, DASEndpointNames, DefinitionDTO, DefinitionIdDTO, DefinitionNameDTO, DefinitionResponseDTO, DefinitionUpdateDTO, IdDTO } from '@abdulraheemabid/rvn-shared';
+import { DASContract, DASEndpointNames, DefinitionDTO, DefinitionIdDTO, DefinitionNameDTO, DefinitionResponseDTO, DefinitionUpdateDTO, EntryDTO, EntryIdInputDTO, EntryUpdateDTO, IdDTO } from '@abdulraheemabid/rvn-shared';
 import { MSClient } from 'src/das-client/ms-client';
 import { Request } from 'express';
 import { FormDTO, FormUpdateDTO } from 'src/form/form.dto';
 import { ConfigService } from 'src/config/config.service';
+import { RecordDTO } from 'src/record/record.dto';
 
 @Injectable()
 export class DasClientService {
@@ -51,14 +52,49 @@ export class DasClientService {
         }
         return this._MSClient.send(pattern, payload);
     }
+
     async deleteDefinition(defId: number): Promise<IdDTO> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.DELETE_DEFINITION).pattern;
         let payload: DefinitionIdDTO = { definitionId: defId };
         return this._MSClient.send(pattern, payload);
     }
-    // async fetchAllEntries() { }
-    // async fetchEntryById() { }
-    // async createEntry() { }
-    // async updateEntry() { }
-    // async deleteEntry() { }
+
+    async fetchAllEntries(defId: number): Promise<EntryDTO[]> {
+        let pattern = DASContract.getEndpointContractByName(DASEndpointNames.FETCH_ALL_ENTRIES).pattern;
+        let payload: DefinitionIdDTO = { definitionId: defId };
+        return this._MSClient.send(pattern, payload);
+    }
+
+    async fetchEntryById(defId: number, recordId: number): Promise<EntryDTO> {
+        let pattern = DASContract.getEndpointContractByName(DASEndpointNames.FETCH_ENTRY_BY_ID).pattern;
+        let payload: EntryIdInputDTO = { id: recordId, definitionId: defId };
+        return this._MSClient.send(pattern, payload);
+    }
+
+    async createEntry(defId: number, record: RecordDTO, request: Request): Promise<IdDTO> {
+        let pattern = DASContract.getEndpointContractByName(DASEndpointNames.CREATE_ENTRY).pattern;
+        let payload: EntryDTO = {
+            ...record,
+            request,
+            definitionId: defId
+        }
+        return this._MSClient.send(pattern, payload);
+    }
+
+    async updateEntry(defId: number, entryId: number, record: RecordDTO, request: Request): Promise<IdDTO> {
+        let pattern = DASContract.getEndpointContractByName(DASEndpointNames.CREATE_ENTRY).pattern;
+        let payload: EntryUpdateDTO = {
+            ...record,
+            request,
+            id: entryId,
+            definitionId: defId
+        }
+        return this._MSClient.send(pattern, payload);
+    }
+
+    async deleteEntry(defId: number, recordId: number): Promise<IdDTO> {
+        let pattern = DASContract.getEndpointContractByName(DASEndpointNames.DELETE_ENTRY).pattern;
+        let payload: EntryIdInputDTO = { id: recordId, definitionId: defId };
+        return this._MSClient.send(pattern, payload);
+    }
 }

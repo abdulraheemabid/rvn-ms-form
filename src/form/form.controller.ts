@@ -11,12 +11,12 @@ export class FormController {
     constructor(private service: FormService) { }
 
     @Get()
-    async fetchAllFroms() {
+    async fetchAllForms() {
         return await this.service.fetchAllForms();
     }
 
     @Get(":id")
-    async fetchAFromsById(@Param("id") id: number) {
+    async fetchAFormsById(@Param("id") id: number) {
         return await this.service.fetchFormById(id);
     }
 

@@ -6,7 +6,7 @@ export class MSClient {
     constructor(private client: ClientProxy, private logger, private timeoutInMs: number) { }
 
     send(pattern: any, args: any) {
-        //TODO: tempF
+        //TODO: temp
         if (args.request) args.request = {};
 
         this.logger.log(`Calling RVN_MS_CLIENT | pattern: ${JSON.stringify(pattern)} | args: ${JSON.stringify(args)}`);

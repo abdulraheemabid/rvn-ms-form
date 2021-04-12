@@ -5,10 +5,7 @@ import { Request } from 'express';
 
 @Injectable()
 export class FormService {
-    constructor(
-        private clientService: DasClientService
-    ) { }
-
+    constructor(private clientService: DasClientService) { }
 
     async fetchAllForms() {
         return await this.clientService.fetchAllDefinitions();
