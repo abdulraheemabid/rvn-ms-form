@@ -6,7 +6,7 @@ import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface 
 @ValidatorConstraint({ name: 'FieldArrayValuesValidator', async: false })
 export class FieldArrayValuesValidator implements ValidatorConstraintInterface {
     validate(val: any, args: ValidationArguments): boolean | Promise<boolean> {
-        if (val === FieldTypeEnum.ARRAY) {
+        if (val === FieldTypeEnum.MULTISELECT || val === FieldTypeEnum.SINGLESELECT) {
             const arrayValues = args?.object["arrayValues"];
             return (
                 arrayValues
@@ -19,6 +19,6 @@ export class FieldArrayValuesValidator implements ValidatorConstraintInterface {
         return true;
     }
     defaultMessage?(validationArguments?: ValidationArguments): string {
-        return `arrayValues should not be empty or contain invalid/duplicate values if type is set to ${FieldTypeEnum.ARRAY}`;
+        return `arrayValues should not be empty or contain invalid/duplicate values and contains only string values, if type is set to ${FieldTypeEnum.SINGLESELECT} or ${FieldTypeEnum.MULTISELECT}`;
     }
 }

@@ -25,7 +25,7 @@ export class FormDTO {
 
 export class FormUpdateDTO {
     @IsNumber()
-    id: number;
+    formId: number;
 
     @IsOptional()
     @MinLength(3)

@@ -8,29 +8,29 @@ import { RecordSchemaValidatorPipe } from './pipes/record-schema-validator.pipe'
 export class RecordController {
     constructor(private service: RecordService) { }
 
-    @Get()
-    async fetchAllRecord(@Body() formIdDTO: FormIdDTO) {
+    @Post("fetchAllRecords")
+    async fetchAllRecords(@Body() formIdDTO: FormIdDTO) {
         return await this.service.fetchAllRecords(formIdDTO);
     }
 
-    @Get(":id")
+    @Post("fetchARecordById")
     async fetchARecordById(@Body() recordIdDTO: RecordIdDTO) {
         return await this.service.fetchRecordById(recordIdDTO);
     }
 
-    @Post()
+    @Post("createRecord")
     @UsePipes(RecordSchemaValidatorPipe)
     async createRecord(@Body() recordDTO: RecordDTO) {
         return await this.service.createRecord(recordDTO);
     }
 
-    @Patch(":id")
+    @Post("updateRecord")
     @UsePipes(RecordSchemaValidatorPipe)
     async updateRecord(@Body() recordDTO: RecordUpdateDTO) {
         return await this.service.updateRecord(recordDTO);
     }
 
-    @Delete(":id")
+    @Post("deleteRecord")
     async deleteRecord(@Body() recordIdDTO: RecordIdDTO) {
         return await this.service.deleteRecord(recordIdDTO);
     }

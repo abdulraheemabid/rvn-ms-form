@@ -44,8 +44,8 @@ export class DasClientService {
 
     async updateDefinition(formDTO: FormUpdateDTO): Promise<IdDTO> {
         let pattern = DASContract.getEndpointContractByName(DASEndpointNames.UPDATE_DEFINITION).pattern;
-        let definitionId = formDTO.id;
-        delete formDTO.id;
+        let definitionId = formDTO.formId;
+        delete formDTO.formId;
         let payload: DefinitionUpdateDTO = {
             ...formDTO,
             definitionId
