@@ -3,6 +3,7 @@ import { ArgumentMetadata, HttpException, HttpStatus, Injectable, PipeTransform 
 import { FormService } from 'src/form/form.service';
 import { RecordDTO, RecordUpdateDTO } from '../record.dto';
 import * as moment from 'moment';
+import { getRCPException } from 'src/utils/exception.util';
 
 @Injectable()
 export class RecordSchemaValidatorPipe implements PipeTransform {
@@ -19,20 +20,18 @@ export class RecordSchemaValidatorPipe implements PipeTransform {
       // required fields are present or not?
       const rquiredFieldIds = formFields.filter(f => f.required).map(f => f.id.toString());
       const notProvidedRequiredFields = rquiredFieldIds.filter(f => !Object.keys(entry).includes(f));
-      if (notProvidedRequiredFields.length > 0)
-        throw new HttpException(`Field ids [${notProvidedRequiredFields.join(",")}] are required but not provided`, HttpStatus.NOT_ACCEPTABLE);
+      if (notProvidedRequiredFields.length > 0) throw getRCPException({ message: `Field ids [${notProvidedRequiredFields.join(",")}] are required but not provided`, statusCode: HttpStatus.NOT_ACCEPTABLE });
 
       Object.keys(entry).forEach(key => {
         const fieldOfKey = formFields.find(f => f.id.toString() === key.toString());
 
         // unknown field ids
         if (!fieldOfKey)
-          throw new HttpException(`Field id ${key} not found in form definition`, HttpStatus.NOT_FOUND);
+          throw getRCPException({ message: `Field id ${key} not found in form definition`, statusCode: HttpStatus.NOT_FOUND });
 
         // field type match
         else if (!this.isValueOfSameTypeAsInDefinition(key, entry[key], fieldOfKey))
-          throw new HttpException(`Value of field id ${key} doesnt match type defined in form '${fieldOfKey.type}'`, HttpStatus.NOT_ACCEPTABLE);
-
+          throw getRCPException({ message: `Value of field id ${key} doesnt match type defined in form '${fieldOfKey.type}'`, statusCode: HttpStatus.NOT_ACCEPTABLE })
       });
 
       return value;
@@ -59,7 +58,7 @@ export class RecordSchemaValidatorPipe implements PipeTransform {
           case typeof value !== "string":
             return false;
           default:
-            throw new HttpException(`Field ${fieldId}'s value is not one of the allowed values`, HttpStatus.NOT_ACCEPTABLE)
+            throw getRCPException({ message: `Field ${fieldId}'s value is not one of the allowed values`, statusCode: HttpStatus.NOT_ACCEPTABLE });
         }
       case FieldTypeEnum.MULTISELECT:
         switch (true) {
@@ -68,7 +67,7 @@ export class RecordSchemaValidatorPipe implements PipeTransform {
           case !Array.isArray(value):
             return false;
           default:
-            throw new HttpException(`One of the field ${fieldId}'s value is not one of the allowed values`, HttpStatus.NOT_ACCEPTABLE)
+            throw getRCPException({ message: `One of the field ${fieldId}'s value is not one of the allowed values`, statusCode: HttpStatus.NOT_ACCEPTABLE });
         }
       default:
         return false;

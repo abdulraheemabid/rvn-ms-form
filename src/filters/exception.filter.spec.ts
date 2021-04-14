@@ -1,4 +1,4 @@
-import { UnhandledExceptionFilter } from './unhandled-exception.filter';
+import { UnhandledExceptionFilter } from './exception.filter';
 
 describe('UnhandledExceptionFilter', () => {
   it('should be defined', () => {

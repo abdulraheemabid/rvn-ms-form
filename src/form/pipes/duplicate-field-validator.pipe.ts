@@ -1,4 +1,5 @@
 import { ArgumentMetadata, HttpException, HttpStatus, Injectable, PipeTransform } from '@nestjs/common';
+import { getRCPException } from 'src/utils/exception.util';
 import { FormDTO, FormUpdateDTO } from '../form.dto';
 import { FormService } from '../form.service';
 
@@ -14,7 +15,7 @@ export class DuplicateFieldValidatorPipe implements PipeTransform {
       const existingFieldNames = form.fields.map(f => f.name);
       const newFields = value.fields.filter(f => f.id === undefined);
       newFields.forEach(f => {
-        if (existingFieldNames.includes(f.name)) throw new HttpException(`Field with name ${f.name} already exists. Send id in the field if want to update existing`, HttpStatus.CONFLICT);
+        if (existingFieldNames.includes(f.name)) throw getRCPException({ message: `Field with name ${f.name} already exists. Send id in the field if want to update existing`, statusCode: HttpStatus.CONFLICT });
       });
     }
 

@@ -1,7 +1,5 @@
 import { HttpExceptionCustomMessages, IApiResponseWrapper } from '@abdulraheemabid/rvn-shared';
 import { ArgumentsHost, Catch, ExceptionFilter, Logger } from '@nestjs/common';
-import { TcpContext } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
 
 
 @Catch()
@@ -10,8 +8,9 @@ export class UnhandledExceptionFilter implements ExceptionFilter {
 
   catch(exception: any, host: ArgumentsHost) {
 
-    const message = exception?.response?.message || exception?.message || HttpExceptionCustomMessages[exception?.response?.statusCode] || "Request unsuccessfull";
-    const statusCode = exception?.statusCode || exception?.response?.statusCode || 500;
+    let message = exception?.error?.message || exception?.response?.message || exception?.message || HttpExceptionCustomMessages[exception?.response?.statusCode] || "Request unsuccessfull";
+    message = this.convertToFormAndRecordNaming(message);
+    const statusCode = exception?.error?.statusCode || exception?.statusCode || exception?.response?.statusCode || 500;
 
     //TODO: uncomment when changed to microservice
     // const pattern = host
@@ -43,5 +42,25 @@ export class UnhandledExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const resp = ctx.getResponse();
     resp.status(statusCode).json(response);
+  }
+
+  convertToFormAndRecordNaming(message: string | string[]) {
+
+    if (Array.isArray(message)) {
+      message.forEach(m => {
+        m = m.replace(/Definition/g, "Form")
+          .replace(/definition/g, "form")
+          .replace(/Entry/g, "Record")
+          .replace(/entry/g, "record")
+          .replace(/entries/g, "records")
+      });
+      return message;
+    } else {
+      return message.replace(/Definition/g, "Form")
+        .replace(/definition/g, "form")
+        .replace(/Entry/g, "Record")
+        .replace(/entry/g, "record")
+        .replace(/entries/g, "records")
+    }
   }
 }

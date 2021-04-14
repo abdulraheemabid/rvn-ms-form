@@ -1,6 +1,7 @@
 import { ArgumentMetadata, HttpException, HttpStatus, Injectable, PipeTransform } from '@nestjs/common';
 import { FormDTO, FormUpdateDTO } from 'src/form/form.dto';
 import { FormService } from 'src/form/form.service';
+import { getRCPException } from 'src/utils/exception.util';
 
 @Injectable()
 export class DuplicateFormValidatorPipe implements PipeTransform {
@@ -8,7 +9,7 @@ export class DuplicateFormValidatorPipe implements PipeTransform {
   async transform(value: FormDTO | FormUpdateDTO, metadata: ArgumentMetadata) {
     if (value.name) {
       let form = await this.formService.fetchFormByName(value.name);
-      if (form) throw new HttpException("Form with the same name already exists.", HttpStatus.CONFLICT);
+      if (form) throw getRCPException({ message: `Form with the same name already exists.`, statusCode: HttpStatus.CONFLICT });
     }
     return value;
   }
