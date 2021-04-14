@@ -8,13 +8,6 @@ export class DuplicateFieldValidatorPipe implements PipeTransform {
 
   async transform(value: FormUpdateDTO, metadata: ArgumentMetadata) {
 
-    if (value.fields) {
-      // checking if duplicate field names in request
-      const fieldNames = value.fields.map(f => f.name);
-      const fieldNamesSet = new Set(fieldNames);
-      if (fieldNames.length != fieldNamesSet.size) throw new HttpException("More than one field found with same name", HttpStatus.CONFLICT);
-    }
-
     if (value.formId && value.fields) {
       // checking if new field is bieng created with a same name as existing;
       let form = await this.formService.fetchFormById({ formId: value.formId });

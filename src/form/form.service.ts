@@ -5,18 +5,20 @@ import { Request } from 'express';
 
 @Injectable()
 export class FormService {
-    constructor(private clientService: DasClientService) { }
+    constructor(private dasClient: DasClientService) { }
 
     async fetchAllForms() {
-        return await this.clientService.fetchAllDefinitions();
+        return await this.dasClient.fetchAllDefinitions();
     }
 
     async fetchFormById(formIdDTO: FormIdDTO) {
-        return await this.clientService.fetchDefinitionById(formIdDTO);
+        const payload = { definitionId: formIdDTO.formId };
+        return await this.dasClient.fetchDefinitionById(payload);
     }
 
     async fetchFormByName(name: string) {
-        const definitions = await this.clientService.fetchDefinitionsByName(name);
+        const payload = { name };
+        const definitions = await this.dasClient.fetchDefinitionsByName(payload);
         return definitions.length > 0 ? definitions[0] : null;
     }
 
@@ -24,19 +26,22 @@ export class FormService {
         // FUTURE: will handle logic of creating nested or embeded forms
         // FUTURE: modifying entries if needed.
         // FUTURE: emit events for dw service
-        return await this.clientService.createDefinition(formDTO);
+        return await this.dasClient.createDefinition(formDTO);
     }
 
     async updateForm(formDTO: FormUpdateDTO) {
         // FUTURE: will handle logic of creating nested or embeded forms
         // FUTURE: modifying entries if needed.
         // FUTURE: emit events for dw service
-        return await this.clientService.updateDefinition(formDTO);
+        const payload = { ...formDTO, definitionId: formDTO.formId };
+        delete payload.formId;
+        return await this.dasClient.updateDefinition(payload);
     }
     async deleteForm(formIdDTO: FormIdDTO) {
         // FUTURE: will handle logic of creating nested or embeded forms
         // FUTURE: modifying entries if needed.
         // FUTURE: emit events for dw service
-        return await this.clientService.deleteDefinition(formIdDTO);
+        const payload = { definitionId: formIdDTO.formId };
+        return await this.dasClient.deleteDefinition(payload);
     }
 }
