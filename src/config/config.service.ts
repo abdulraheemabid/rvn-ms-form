@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as nconf from 'nconf';
 import * as path from 'path';
-import { Transport } from '@nestjs/microservices';
 
 @Injectable()
 export class ConfigService {
