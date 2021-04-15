@@ -2,6 +2,7 @@ import { ArgumentMetadata, HttpStatus, Injectable, PipeTransform, Scope } from '
 import { HttpException } from '@nestjs/common/exceptions';
 import { FormUpdateDTO } from 'src/form/form.dto';
 import { FormService } from 'src/form/form.service';
+import { getRCPException } from 'src/utils/exception.util';
 
 @Injectable({ scope: Scope.REQUEST })
 export class AtLeastOneFieldValidatorPipe implements PipeTransform {
@@ -15,7 +16,7 @@ export class AtLeastOneFieldValidatorPipe implements PipeTransform {
       const fieldsToBeDeleted = value.fields.filter(f => f.markDeleted === true).length;
       const fieldsToBeAdded = value.fields.filter(f => f.id === undefined).length;
       if (existingFieldCount - fieldsToBeDeleted + fieldsToBeAdded < 1)
-        throw new HttpException("Form should have atleast one field", HttpStatus.NOT_ACCEPTABLE);
+        throw getRCPException({ message: "Form should have atleast one field", statusCode: HttpStatus.NOT_ACCEPTABLE });
     }
 
     return value;

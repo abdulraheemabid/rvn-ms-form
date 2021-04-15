@@ -37,5 +37,5 @@ export class RecordIdDTO {
     formId: number
 
     @IsNumber()
-    entryId: number
+    recordId: number
 }

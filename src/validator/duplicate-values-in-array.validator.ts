@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common/decorators";
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 
 @Injectable()
-@ValidatorConstraint({ name: 'DuplicateValuesValidator', async: false })
-export class DuplicateValuesValidator implements ValidatorConstraintInterface {
+@ValidatorConstraint({ name: 'DuplicateValuesInArrayValidator', async: false })
+export class DuplicateValuesInArrayValidator implements ValidatorConstraintInterface {
   public async validate(val: any, args: ValidationArguments): Promise<boolean> {
 
     if (val && Array.isArray(val) && val.length > 1) {
@@ -17,3 +17,4 @@ export class DuplicateValuesValidator implements ValidatorConstraintInterface {
     return `Duplicate values in array`;
   }
 }
+
