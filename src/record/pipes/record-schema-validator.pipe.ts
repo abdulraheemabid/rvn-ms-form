@@ -1,4 +1,4 @@
-import { FieldTypeEnum } from '@abdulraheemabid/rvn-shared';
+import { FieldTypeEnum } from '@abdulraheemabid/rvn-nest-shared';
 import { ArgumentMetadata, HttpException, HttpStatus, Injectable, PipeTransform } from '@nestjs/common';
 import { FormService } from 'src/form/form.service';
 import { RecordDTO, RecordUpdateDTO } from '../record.dto';

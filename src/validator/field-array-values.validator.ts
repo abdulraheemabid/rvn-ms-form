@@ -1,4 +1,4 @@
-import { FieldTypeEnum } from '@abdulraheemabid/rvn-shared';
+import { FieldTypeEnum } from '@abdulraheemabid/rvn-nest-shared';
 import { Injectable } from '@nestjs/common';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 

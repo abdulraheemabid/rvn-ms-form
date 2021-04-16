@@ -1,4 +1,4 @@
-import { FieldTypeEnum, getAllowedFieldTypesConcatedString } from "@abdulraheemabid/rvn-shared";
+import { FieldTypeEnum, getAllowedFieldTypesConcatedString } from '@abdulraheemabid/rvn-nest-shared';
 import { Type } from "class-transformer";
 import { ArrayNotEmpty, IsArray, IsBoolean, IsEnum, IsNumber, IsObject, IsOptional, IsString, MinLength, Validate, ValidateNested } from "class-validator";
 import { DuplicateValuesInArrayValidator } from "src/validator/duplicate-values-in-array.validator";
