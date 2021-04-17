@@ -27,7 +27,7 @@ export class RecordSchemaValidatorPipe implements PipeTransform {
 
         // unknown field ids
         if (!fieldOfKey)
-          throw getRCPException({ message: `Field id ${key} not found in form definition`, statusCode: HttpStatus.NOT_FOUND });
+          throw getRCPException({ message: `Field id ${key} not found in form's fields`, statusCode: HttpStatus.NOT_FOUND });
 
         // field type match
         else if (!this.isValueOfSameTypeAsInDefinition(key, entry[key], fieldOfKey))
