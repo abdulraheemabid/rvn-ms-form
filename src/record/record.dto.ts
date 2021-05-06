@@ -1,3 +1,4 @@
+import { GenericObject } from "@abdulraheemabid/rvn-nest-shared";
 import { IsNumber, IsObject, IsOptional } from "class-validator";
 
 export class RecordDTO {
@@ -9,7 +10,7 @@ export class RecordDTO {
 
     @IsOptional()
     @IsObject()
-    attributes?: JSON
+    attributes?: GenericObject
 
     request: Request
 }
@@ -27,7 +28,7 @@ export class RecordUpdateDTO {
 
     @IsOptional()
     @IsObject()
-    attributes?: JSON
+    attributes?: GenericObject
 
     request: Request
 }

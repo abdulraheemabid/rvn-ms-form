@@ -1,10 +1,19 @@
-import { FieldTypeEnum, getAllowedFieldTypesConcatedString } from '@abdulraheemabid/rvn-nest-shared';
+import { FieldTypeEnum, GenericObject, getAllowedFieldTypesConcatedString } from '@abdulraheemabid/rvn-nest-shared';
 import { Type } from "class-transformer";
 import { ArrayNotEmpty, IsArray, IsBoolean, IsEnum, IsNumber, IsObject, IsOptional, IsString, MinLength, Validate, ValidateNested } from "class-validator";
 import { DuplicateValuesInArrayValidator } from "src/validator/duplicate-values-in-array.validator";
 import { FieldArrayValuesValidator } from "src/validator/field-array-values.validator";
 import { Request } from 'express';
 import { DuplicateFieldIdInRecordValidator } from "src/validator/duplicate-fieldId-in-record.validator";
+import { ChildRelationType } from 'src/utils/constants.utils';
+
+export class FormAttributesDTO {
+    parentForm?: {
+        formId: number,
+        relatationType: ChildRelationType
+    }
+    [key: string]: any;
+}
 
 export class FormDTO {
     @MinLength(3)
@@ -19,7 +28,7 @@ export class FormDTO {
 
     @IsOptional()
     @IsObject()
-    attributes?: JSON;
+    attributes?: FormAttributesDTO;
 
     request: Request
 }
@@ -43,7 +52,7 @@ export class FormUpdateDTO {
 
     @IsOptional()
     @IsObject()
-    attributes?: JSON;
+    attributes?: GenericObject;
 
     request: Request
 }
@@ -75,7 +84,7 @@ export class FormFieldDTO {
 
     @IsOptional()
     @IsObject()
-    attributes?: JSON;
+    attributes?: GenericObject;
 
     //need for update case
     @IsOptional()
