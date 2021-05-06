@@ -18,7 +18,7 @@ import { DasClientService } from './das-client.service';
     ],
     imports: [
         ClientsModule.register([
-            { name: 'RVN_MS_CLIENT', transport: Transport.TCP }
+            { name: 'RVN_MS_CLIENT', transport: Transport.TCP, options: { port: 3001 } }
         ])
     ],
     exports: [
