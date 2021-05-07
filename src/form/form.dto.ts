@@ -52,7 +52,7 @@ export class FormUpdateDTO {
 
     @IsOptional()
     @IsObject()
-    attributes?: GenericObject;
+    attributes?: FormAttributesDTO;
 
     request: Request
 }
@@ -95,4 +95,7 @@ export class FormFieldDTO {
 export class FormIdDTO {
     @IsNumber()
     formId: number;
+
+    // For incoming calls such as delete
+    request?: Request
 }

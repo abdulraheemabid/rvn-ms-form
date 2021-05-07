@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DasClientService } from 'src/das-client/das-client.service';
 import { FormDTO, FormIdDTO, FormUpdateDTO } from './form.dto';
-import { isNullOrUndefined } from '@abdulraheemabid/rvn-nest-shared';
 import { RelationService } from 'src/relation/relation.service';
+import { Request } from 'express';
 
 @Injectable()
 export class FormService {
@@ -49,8 +49,29 @@ export class FormService {
         // FUTURE: will handle logic of creating nested or embeded forms
         // FUTURE: modifying entries if needed.
         // FUTURE: emit events for dw service
-        await this.relationService.deleteFormCreateTreeForChildren(formIdDTO.formId);
+        let affectedChildren = await this.relationService.deleteFormCreateTreeForChildren(formIdDTO.formId);
+        affectedChildren.forEach(async c => await this.markParentAsNull(affectedChildren, formIdDTO.request));
+        
         const payload = { definitionId: formIdDTO.formId };
         return this.dasClient.deleteDefinition(payload);
+    }
+
+    private async markParentAsNull(formIds: number[], request: Request) {
+        let promises = [];
+        formIds.forEach(id => {
+            const formDTO: FormUpdateDTO = {
+                formId: id,
+                request,
+                attributes: {
+                    parentForm: null,
+                    relatationType: null
+                }
+            }
+            promises.push(this.updateForm(formDTO));
+        });
+
+        await Promise.all(promises);
+
+        return true;
     }
 }

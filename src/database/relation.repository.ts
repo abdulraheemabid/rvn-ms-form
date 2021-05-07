@@ -58,7 +58,7 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
         const closureTableName = this.metadata.closureJunctionTable.tablePath;
         const ancestorColumn = this.metadata.closureJunctionTable.ancestorColumns[0].databasePath;
         const descendantColumn = this.metadata.closureJunctionTable.descendantColumns[0].databasePath;
-        
+
         const formRelation = await this.findOneNodeByFormId(formId);
         const id = formRelation.id;
 
@@ -97,21 +97,23 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
         const closureTableName = this.metadata.closureJunctionTable.tablePath;
         const ancestorColumn = this.metadata.closureJunctionTable.ancestorColumns[0].databasePath;
         const descendantColumn = this.metadata.closureJunctionTable.descendantColumns[0].databasePath;
-        
+
         const formToDelete = await this.findOneNodeByFormId(formId);
         const id = formToDelete.id;
 
         // Get Direct children of form to be deleted
         let directDescendants = await this.createQueryBuilder()
-            .select(`main.${primaryColumn}`)
+            .select(`main.${primaryColumn}, main.formId`)
             .distinct(true)
             .from(tableName, "main")
             .where(`main.${parentPropertyName} = :id`, { id })
             .getRawMany();
-        directDescendants = directDescendants.map((v) => v[`main_${primaryColumn}`]);
 
+        console.log("directDescendants", directDescendants);
+        const directDescendantsIds = directDescendants.map((v) => v[primaryColumn]);
+        console.log("directDescendantsIds", directDescendantsIds);
 
-        // Delete all from closure where either ancestor or descendant id is formId
+        // Delete all from closure where either ancestor or descendant id is id
         await this.createQueryBuilder()
             .delete()
             .from(closureTableName)
@@ -121,7 +123,7 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
         // Mark parent as null for step 1 children
         await this.createQueryBuilder()
             .update(tableName, { [parentPropertyName]: null })
-            .where(`${primaryColumn} IN (:...ids)`, { ids: directDescendants })
+            .where(`${primaryColumn} IN (:...ids)`, { ids: directDescendantsIds })
             .execute();
 
         // Delete formId record from main
@@ -131,7 +133,8 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
             .where(`${primaryColumn} = :id`, { id })
             .execute();
 
-        return { raw: directDescendants };
+        // return descendants formId which are now roots
+        return directDescendants.map(d => d[`formId`]) as number[];
     }
 
     // Tree methods
