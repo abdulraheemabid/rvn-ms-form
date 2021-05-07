@@ -51,14 +51,14 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
     // FUTURE: this is not official solution for delete.
     // its taken from https://github.com/typeorm/typeorm/issues/193
     //@Transaction()
-    async deleteNode(formId: number) {
+    async deleteCascadeNode(formId: number) {
         const tableName = this.metadata.tablePath;
         const primaryColumn = this.metadata.primaryColumns[0].databasePath;
-        const parentPropertyName = this.metadata.treeParentRelation.joinColumns[0].propertyName;
-        const parentColumn = this.metadata.treeParentRelation.joinColumns[0].databasePath;
+
         const closureTableName = this.metadata.closureJunctionTable.tablePath;
         const ancestorColumn = this.metadata.closureJunctionTable.ancestorColumns[0].databasePath;
         const descendantColumn = this.metadata.closureJunctionTable.descendantColumns[0].databasePath;
+        
         const formRelation = await this.findOneNodeByFormId(formId);
         const id = formRelation.id;
 
@@ -79,12 +79,6 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
             .where(`${descendantColumn} IN (:...ids)`, { ids: descendantNodeIds })
             .execute();
 
-        // // Set parent FK to null in the main table
-        // await this.createQueryBuilder()
-        //     .update(tableName, { [parentPropertyName]: null })
-        //     .where(`${parentColumn} IN (:...ids)`, { ids: descendantNodeIds })
-        //     .execute();
-
         // Delete from main table
         await this.createQueryBuilder()
             .delete()
@@ -93,6 +87,51 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
             .execute();
 
         return { raw: descendantNodeIds };
+    }
+
+    async deleteNodeCreateTreeForDescendants(formId: number) {
+        const tableName = this.metadata.tablePath;
+        const primaryColumn = this.metadata.primaryColumns[0].databasePath;
+        const parentPropertyName = this.metadata.treeParentRelation.joinColumns[0].propertyName;
+
+        const closureTableName = this.metadata.closureJunctionTable.tablePath;
+        const ancestorColumn = this.metadata.closureJunctionTable.ancestorColumns[0].databasePath;
+        const descendantColumn = this.metadata.closureJunctionTable.descendantColumns[0].databasePath;
+        
+        const formToDelete = await this.findOneNodeByFormId(formId);
+        const id = formToDelete.id;
+
+        // Get Direct children of form to be deleted
+        let directDescendants = await this.createQueryBuilder()
+            .select(`main.${primaryColumn}`)
+            .distinct(true)
+            .from(tableName, "main")
+            .where(`main.${parentPropertyName} = :id`, { id })
+            .getRawMany();
+        directDescendants = directDescendants.map((v) => v[`main_${primaryColumn}`]);
+
+
+        // Delete all from closure where either ancestor or descendant id is formId
+        await this.createQueryBuilder()
+            .delete()
+            .from(closureTableName)
+            .where(`${ancestorColumn} = :id or ${descendantColumn} = :id`, { id })
+            .execute();
+
+        // Mark parent as null for step 1 children
+        await this.createQueryBuilder()
+            .update(tableName, { [parentPropertyName]: null })
+            .where(`${primaryColumn} IN (:...ids)`, { ids: directDescendants })
+            .execute();
+
+        // Delete formId record from main
+        await this.createQueryBuilder()
+            .delete()
+            .from(tableName)
+            .where(`${primaryColumn} = :id`, { id })
+            .execute();
+
+        return { raw: directDescendants };
     }
 
     // Tree methods

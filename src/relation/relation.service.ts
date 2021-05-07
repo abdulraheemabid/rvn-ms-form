@@ -13,14 +13,18 @@ export class RelationService {
         private readonly repo: RelationRepository,
     ) { }
 
-    async createFormRelation(formId: number, formDTO: FormDTO) {
+    async createForm(formId: number, formDTO: FormDTO) {
         const parentFormId = formDTO?.attributes?.parentForm?.formId || null;
         const relationType = formDTO?.attributes?.parentForm?.relatationType || null;
         return await this.repo.saveNode(formId, parentFormId, relationType, formDTO.request)
     }
 
-    async deleteCascadeFormRelations(formId: number) {
-        return await this.repo.deleteNode(formId);
+    async deleteCascadeForm(formId: number) {
+        return await this.repo.deleteCascadeNode(formId);
+    }
+
+    async deleteFormCreateTreeForChildren(formId: number){
+        return await this.repo.deleteNodeCreateTreeForDescendants(formId);
     }
 
     async getFormTrees() {

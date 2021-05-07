@@ -11,7 +11,7 @@ export class FormService {
         private relationService: RelationService) { }
 
     async fetchAllForms() {
-        return this.dasClient.fetchAllDefinitions();
+        return this.dasClient.fetchAllDefinitions()
     }
 
     async fetchFormById(formIdDTO: FormIdDTO) {
@@ -31,7 +31,7 @@ export class FormService {
         // FUTURE: emit events for dw service
         // TODO: now do these two steps in a transaction
         const createdFormIdDTO = await this.dasClient.createDefinition(formDTO);
-        await this.relationService.createFormRelation(createdFormIdDTO.id, formDTO);
+        await this.relationService.createForm(createdFormIdDTO.id, formDTO);
         return createdFormIdDTO;
     }
 
@@ -49,7 +49,7 @@ export class FormService {
         // FUTURE: will handle logic of creating nested or embeded forms
         // FUTURE: modifying entries if needed.
         // FUTURE: emit events for dw service
-        await this.relationService.deleteCascadeFormRelations(formIdDTO.formId);
+        await this.relationService.deleteFormCreateTreeForChildren(formIdDTO.formId);
         const payload = { definitionId: formIdDTO.formId };
         return this.dasClient.deleteDefinition(payload);
     }
