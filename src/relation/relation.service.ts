@@ -13,14 +13,46 @@ export class RelationService {
         private readonly repo: RelationRepository,
     ) { }
 
-    async createRelation(formId: number, formDTO: FormDTO) {
+    async createFormRelation(formId: number, formDTO: FormDTO) {
         const parentFormId = formDTO?.attributes?.parentForm?.formId || null;
         const relationType = formDTO?.attributes?.parentForm?.relatationType || null;
-        return await this.repo.saveRelation(formId, parentFormId, relationType, formDTO.request)
+        return await this.repo.saveNode(formId, parentFormId, relationType, formDTO.request)
     }
 
-    async getChildrenForms(id: FormIdDTO) {
-        return await this.repo.findRelationDescendants(id.formId);
+    async deleteCascadeFormRelations(formId: number) {
+        return await this.repo.deleteNode(formId);
+    }
+
+    async getFormTrees() {
+        return this.repo.findTrees();
+    }
+
+    async getRootForms() {
+        return this.repo.findRoots();
+    }
+
+    async getFormChildren(formId: number) {
+        return this.repo.findNodeDescendants(formId);
+    }
+
+    async getFormChildrenNested(formId: number) {
+        return this.repo.findNodeDescendantsTree(formId);
+    }
+
+    async getFormChildrenCount(formId: number) {
+        return this.repo.countNodeDescendants(formId);
+    }
+
+    async getFormParents(formId: number) {
+        return this.repo.findNodeAncestors(formId);
+    }
+
+    async getFormParentsNested(formId: number) {
+        return this.repo.findNodeAncestorsTree(formId);
+    }
+
+    async getFormParentsCount(formId: number) {
+        return this.repo.countNodeAncestors(formId);
     }
 
 }

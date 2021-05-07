@@ -1,91 +1,137 @@
 import { isNullOrUndefined } from '@abdulraheemabid/rvn-nest-shared';
 import { ChildRelationType } from 'src/utils/constants.utils';
-import { EntityRepository, TreeRepository } from 'typeorm';
+import { EntityRepository, Transaction, TreeRepository } from 'typeorm';
 import { IRelationRepository } from './IRelation.repository';
 import { RelationEntity } from './relation.entity';
 import { Request } from 'express';
+import { NotImplementedException } from '@nestjs/common';
 
 @EntityRepository(RelationEntity)
 export class RelationRepository extends TreeRepository<RelationEntity> implements IRelationRepository {
 
-    async findRelations(options: any = {}) {
+    async findNodes(options: any = {}) {
         return await this.find(options);
     }
 
-    async findOneRelationById(id: number, options: any = {}) {
+    async findOneNodeById(id: number, options: any = {}) {
         return await this.findOne(id, options);
     }
 
-    async findOneRelationByFormId(formId: number, options: any = {}) {
+    async findOneNodeByFormId(formId: number, options: any = {}) {
         if (!isNullOrUndefined(options.where)) options.where = { ...options.where, formId };
         else options.where = { formId };
         return await this.findOne(options);
     }
 
-    async softDeleteRelation(id: number) {
-        await this.softDelete(id);
-        return id;
-    }
-
-    async saveRelation(formId: number, parentFormId: number = null, relationType: ChildRelationType, request: Request) {
+    async saveNode(formId: number, parentFormId: number = null, relationType: ChildRelationType, request: Request) {
         let relationObj: RelationEntity = new RelationEntity();
         relationObj.formId = formId;
         relationObj.relationType = relationType;
         relationObj.parent = null;
-        if (parentFormId) relationObj.parent = await this.findOneRelationByFormId(parentFormId);
+        if (parentFormId) relationObj.parent = await this.findOneNodeByFormId(parentFormId);
 
         //TODO: set createdBy
         if (request) relationObj.createdById = 1;
 
-        return await this.save(relationObj);
+        let result = this.save(relationObj);
+
+        return result;
     }
 
-    async updateRelation(updatedRelation: RelationEntity, request: Request) {
-        if (request) {
-            //TODO: set updatedBy
-            updatedRelation.updatedById = 1;
-        }
+    // FUTURE: as typeorm dont support updates/deletes on heirarchy yet, implement once fixed. 
+    // https://github.com/typeorm/typeorm/issues/2032
+    async updateNode(updatedRelation: RelationEntity, request: Request) {
+        throw NotImplementedException;
+    }
 
-        return await this.save(updatedRelation);
+    async softDeleteNode(id: number) {
+        throw NotImplementedException;
+    }
+
+    // FUTURE: this is not official solution for delete.
+    // its taken from https://github.com/typeorm/typeorm/issues/193
+    //@Transaction()
+    async deleteNode(formId: number) {
+        const tableName = this.metadata.tablePath;
+        const primaryColumn = this.metadata.primaryColumns[0].databasePath;
+        const parentPropertyName = this.metadata.treeParentRelation.joinColumns[0].propertyName;
+        const parentColumn = this.metadata.treeParentRelation.joinColumns[0].databasePath;
+        const closureTableName = this.metadata.closureJunctionTable.tablePath;
+        const ancestorColumn = this.metadata.closureJunctionTable.ancestorColumns[0].databasePath;
+        const descendantColumn = this.metadata.closureJunctionTable.descendantColumns[0].databasePath;
+        const formRelation = await this.findOneNodeByFormId(formId);
+        const id = formRelation.id;
+
+        // Get all the descendant node ids from the closure table
+        const closureNodes = await this.createQueryBuilder()
+            .select(`closure.${descendantColumn}`)
+            .distinct(true)
+            .from(closureTableName, 'closure')
+            .where(`closure.${ancestorColumn} = :ancestorId`, { ancestorId: id })
+            .getRawMany();
+
+        const descendantNodeIds = closureNodes.map((v) => v[`closure_${descendantColumn}`]);
+
+        // Delete all the nodes from the closure table
+        await this.createQueryBuilder()
+            .delete()
+            .from(closureTableName)
+            .where(`${descendantColumn} IN (:...ids)`, { ids: descendantNodeIds })
+            .execute();
+
+        // // Set parent FK to null in the main table
+        // await this.createQueryBuilder()
+        //     .update(tableName, { [parentPropertyName]: null })
+        //     .where(`${parentColumn} IN (:...ids)`, { ids: descendantNodeIds })
+        //     .execute();
+
+        // Delete from main table
+        await this.createQueryBuilder()
+            .delete()
+            .from(tableName)
+            .where(`${primaryColumn} IN (:...ids)`, { ids: descendantNodeIds })
+            .execute();
+
+        return { raw: descendantNodeIds };
     }
 
     // Tree methods
 
-    async findTrees() {
+    async findNodeTrees() {
         return this.findTrees();
     }
 
-    async findRoots() {
+    async findRNodeRoots() {
         return this.findRoots();
     }
 
-    async findRelationDescendants(parentFormId: number) {
-        const parent = await this.findOneRelationByFormId(parentFormId);
+    async findNodeDescendants(parentFormId: number) {
+        const parent = await this.findOneNodeByFormId(parentFormId);
         return this.findDescendants(parent);
     }
 
-    async findRelationDescendantsTree(parentFormId: number) {
-        const parent = await this.findOneRelationByFormId(parentFormId);
+    async findNodeDescendantsTree(parentFormId: number) {
+        const parent = await this.findOneNodeByFormId(parentFormId);
         return this.findDescendantsTree(parent);
     }
 
-    async countRelationDescendants(parentFormId: number) {
-        const parent = await this.findOneRelationByFormId(parentFormId);
+    async countNodeDescendants(parentFormId: number) {
+        const parent = await this.findOneNodeByFormId(parentFormId);
         return this.countDescendants(parent);
     }
 
-    async findRelationAncestors(childFormId: number) {
-        const child = await this.findOneRelationByFormId(childFormId);
+    async findNodeAncestors(childFormId: number) {
+        const child = await this.findOneNodeByFormId(childFormId);
         return this.findAncestors(child);
     }
 
-    async findRelationAncestorsTree(childFormId: number) {
-        const child = await this.findOneRelationByFormId(childFormId);
+    async findNodeAncestorsTree(childFormId: number) {
+        const child = await this.findOneNodeByFormId(childFormId);
         return this.findAncestorsTree(child);
     }
 
-    async counRelationtAncestors(childFormId: number) {
-        const child = await this.findOneRelationByFormId(childFormId);
+    async countNodeAncestors(childFormId: number) {
+        const child = await this.findOneNodeByFormId(childFormId);
         return this.countAncestors(child);
     }
 
