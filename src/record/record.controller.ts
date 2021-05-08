@@ -4,6 +4,7 @@ import { FormIdDTO } from 'src/form/form.dto';
 import { RecordDTO, RecordIdDTO, RecordUpdateDTO } from 'src/Record/Record.dto';
 import { RecordService } from 'src/Record/Record.service';
 import { modules, serviceName } from 'src/utils/constants.utils';
+import { ParentValidatorPipe } from './pipes/parent-validator.pipe';
 import { RecordSchemaValidatorPipe } from './pipes/record-schema-validator.pipe';
 
 @Controller()
@@ -22,12 +23,14 @@ export class RecordController {
 
     @MessagePattern({ service: serviceName, module: modules.record, method: "createRecord" })
     @UsePipes(RecordSchemaValidatorPipe)
+    @UsePipes(ParentValidatorPipe)
     async createRecord(@Body() recordDTO: RecordDTO) {
         return await this.service.createRecord(recordDTO);
     }
 
     @MessagePattern({ service: serviceName, module: modules.record, method: "updateRecord" })
     @UsePipes(RecordSchemaValidatorPipe)
+    @UsePipes(ParentValidatorPipe)
     async updateRecord(@Body() recordDTO: RecordUpdateDTO) {
         return await this.service.updateRecord(recordDTO);
     }

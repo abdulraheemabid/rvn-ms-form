@@ -9,20 +9,26 @@ export class RecordService {
 
     async fetchAllRecords(formIdDTO: FormIdDTO) {
         const payload = { definitionId: formIdDTO.formId };
-        return await this.clientService.fetchAllEntries(payload);
+        return this.clientService.fetchAllEntries(payload);
     }
 
     async fetchRecordById(recordIdDTO: RecordIdDTO) {
         const payload = { definitionId: recordIdDTO.formId, id: recordIdDTO.recordId };
-        return await this.clientService.fetchEntryById(payload);
+        return this.clientService.fetchEntryById(payload);
     }
 
     async createRecord(recordDTO: RecordDTO) {
+
         // FUTURE: will handle logic of creating nested or embeded Records
         // FUTURE: emit events for dw service
         const payload = { ...recordDTO, definitionId: recordDTO.formId };
+
+        // setting formId in each record for ease
+        payload.attributes = { ...payload.attributes, formId: recordDTO.formId };
+
         delete payload.formId;
-        return await this.clientService.createEntry(payload);
+
+        return this.clientService.createEntry(payload);
     }
 
     async updateRecord(recordDTO: RecordUpdateDTO) {
@@ -30,12 +36,12 @@ export class RecordService {
         // FUTURE: emit events for dw service
         const payload = { ...recordDTO, definitionId: recordDTO.formId };
         delete payload.formId;
-        return await this.clientService.updateEntry(payload);
+        return this.clientService.updateEntry(payload);
     }
     async deleteRecord(recordIdDTO: RecordIdDTO) {
         // FUTURE: will handle logic of creating nested or embeded Records
         // FUTURE: emit events for dw service
         const payload = { definitionId: recordIdDTO.formId, id: recordIdDTO.recordId };
-        return await this.clientService.deleteEntry(payload);
+        return this.clientService.deleteEntry(payload);
     }
 }

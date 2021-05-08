@@ -15,7 +15,7 @@ export class RelationService {
 
     async createForm(formId: number, formDTO: FormDTO) {
         const parentFormId = formDTO?.attributes?.parentForm?.formId || null;
-        const relationType = formDTO?.attributes?.parentForm?.relatationType || null;
+        const relationType = formDTO?.attributes?.parentForm?.relationType || null;
         return await this.repo.saveNode(formId, parentFormId, relationType, formDTO.request)
     }
 
@@ -53,6 +53,10 @@ export class RelationService {
 
     async getFormParentsNested(formId: number) {
         return this.repo.findNodeAncestorsTree(formId);
+    }
+
+    async getFormImidiateParentForm(formId: number) {
+        return this.repo.findNodeImidiateAncestor(formId);
     }
 
     async getFormParentsCount(formId: number) {

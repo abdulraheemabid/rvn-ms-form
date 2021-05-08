@@ -1,6 +1,6 @@
 import { isNullOrUndefined } from '@abdulraheemabid/rvn-nest-shared';
 import { ChildRelationType } from 'src/utils/constants.utils';
-import { EntityRepository, Transaction, TreeRepository } from 'typeorm';
+import { EntityRepository, FindOneOptions, Transaction, TreeRepository } from 'typeorm';
 import { IRelationRepository } from './IRelation.repository';
 import { RelationEntity } from './relation.entity';
 import { Request } from 'express';
@@ -134,6 +134,11 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
 
         // return descendants formId which are now roots
         return directDescendants.map(d => d[`formId`]) as number[];
+    }
+
+    async findNodeImidiateAncestor(formId: number) {
+        const tree = await this.findNodeAncestorsTree(formId);
+        return tree?.parent?.formId || null;
     }
 
     // Tree methods
