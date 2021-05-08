@@ -42,7 +42,6 @@ export class FormService {
     }
 
     async updateForm(formDTO: FormUpdateDTO) {
-        // FUTURE: will handle logic of creating nested or embeded forms
         // FUTURE: as typeorm dont support updates on heirarchy yet, implement once fixed. https://github.com/typeorm/typeorm/issues/2032   
         // FUTURE: emit events for dw service
 
@@ -55,7 +54,6 @@ export class FormService {
         return this.dasClient.updateDefinition(payload);
     }
     async deleteForm(formIdDTO: FormIdDTO) {
-        // FUTURE: modifying entries if needed.
         // FUTURE: emit events for dw service
         let affectedChildren = await this.relationService.deleteFormCreateTreeForChildren(formIdDTO.formId);
         affectedChildren.forEach(async c => await this.markParentAsNull(affectedChildren, formIdDTO.request));

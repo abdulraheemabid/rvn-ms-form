@@ -6,6 +6,7 @@ import { AtLeastOneFieldValidatorPipe } from 'src/form/pipes/at-least-one-field-
 import { DuplicateFieldValidatorPipe } from './pipes/duplicate-field-validator.pipe';
 import { modules, serviceName } from 'src/utils/constants.utils';
 import { MessagePattern } from '@nestjs/microservices';
+import { ParentValidatorPipe } from './pipes/parent-validator.pipe';
 
 @Controller()
 export class FormController {
@@ -25,6 +26,7 @@ export class FormController {
     @MessagePattern({ service: serviceName, module: modules.form, method: "createForm" })
     @UsePipes(DuplicateFormValidatorPipe)
     @UsePipes(DuplicateFieldValidatorPipe)
+    @UsePipes(ParentValidatorPipe)
     async createForm(@Body() formDTO: FormDTO) {
         return await this.service.createForm(formDTO);
     }

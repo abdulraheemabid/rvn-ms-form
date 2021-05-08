@@ -109,9 +109,7 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
             .where(`main.${parentPropertyName} = :id`, { id })
             .getRawMany();
 
-        console.log("directDescendants", directDescendants);
-        const directDescendantsIds = directDescendants.map((v) => v[primaryColumn]);
-        console.log("directDescendantsIds", directDescendantsIds);
+        const directDescendantsIds = directDescendants.map((v) => v[primaryColumn]);;
 
         // Delete all from closure where either ancestor or descendant id is id
         await this.createQueryBuilder()
@@ -120,11 +118,12 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
             .where(`${ancestorColumn} = :id or ${descendantColumn} = :id`, { id })
             .execute();
 
-        // Mark parent as null for step 1 children
-        await this.createQueryBuilder()
-            .update(tableName, { [parentPropertyName]: null })
-            .where(`${primaryColumn} IN (:...ids)`, { ids: directDescendantsIds })
-            .execute();
+        // Mark parent as null for step 1 children i any
+        if (directDescendantsIds.length > 0)
+            await this.createQueryBuilder()
+                .update(tableName, { [parentPropertyName]: null })
+                .where(`${primaryColumn} IN (:...ids)`, { ids: directDescendantsIds })
+                .execute();
 
         // Delete formId record from main
         await this.createQueryBuilder()
