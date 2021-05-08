@@ -26,32 +26,40 @@ export class FormService {
     }
 
     async createForm(formDTO: FormDTO) {
-        // FUTURE: will handle logic of creating nested or embeded forms
-        // FUTURE: modifying entries if needed.
         // FUTURE: emit events for dw service
-        // TODO: now do these two steps in a transaction
+
         const createdFormIdDTO = await this.dasClient.createDefinition(formDTO);
-        await this.relationService.createForm(createdFormIdDTO.id, formDTO);
+
+        try {
+            await this.relationService.createForm(createdFormIdDTO.id, formDTO);
+        } catch (e) {
+            // If relation cant be made, delete the deinition which was created.
+            await this.dasClient.deleteDefinition({ definitionId: createdFormIdDTO.id });
+            return e;
+        }
+
         return createdFormIdDTO;
     }
 
     async updateForm(formDTO: FormUpdateDTO) {
         // FUTURE: will handle logic of creating nested or embeded forms
-        // FUTURE: modifying entries if needed.
+        // FUTURE: as typeorm dont support updates on heirarchy yet, implement once fixed. https://github.com/typeorm/typeorm/issues/2032   
         // FUTURE: emit events for dw service
-        // FUTURE: as typeorm dont support updates/deletes on heirarchy yet, implement once fixed. 
-        // https://github.com/typeorm/typeorm/issues/2032
+
         const payload = { ...formDTO, definitionId: formDTO.formId };
         delete payload.formId;
+
+        // deleting parentForm as it cant be updated atm.
+        delete payload?.attributes?.parentForm;
+
         return this.dasClient.updateDefinition(payload);
     }
     async deleteForm(formIdDTO: FormIdDTO) {
-        // FUTURE: will handle logic of creating nested or embeded forms
         // FUTURE: modifying entries if needed.
         // FUTURE: emit events for dw service
         let affectedChildren = await this.relationService.deleteFormCreateTreeForChildren(formIdDTO.formId);
         affectedChildren.forEach(async c => await this.markParentAsNull(affectedChildren, formIdDTO.request));
-        
+
         const payload = { definitionId: formIdDTO.formId };
         return this.dasClient.deleteDefinition(payload);
     }
