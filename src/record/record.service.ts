@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DasClientService } from 'src/das-client/das-client.service';
 import { RecordDeleteDTO, RecordDTO, RecordIdDTO, RecordSearchDTO, RecordUpdateDTO } from './record.dto';
-import { FormIdDTO } from 'src/form/form.dto';
 import { Request } from 'express';
 import { RelationService } from 'src/relation/relation.service';
 
@@ -15,7 +14,7 @@ export class RecordService {
     }
 
     async fetchAllRecordsWhereParentId(recordSearchDTO: RecordSearchDTO) {
-        // TODO: redundant call. fix this in a single call
+        // TODO: Optimize: redundant call. fix this in a single call
         const payload = { definitionId: recordSearchDTO.formId, searchOptions: recordSearchDTO.searchOptions };
         const records = await this.clientService.fetchAllEntries(payload);
         return records.filter(r => r?.attributes?.parent?.recordId === recordSearchDTO.parentId);
@@ -51,54 +50,32 @@ export class RecordService {
         // FUTURE: will handle logic of creating nested or embeded Records
         // FUTURE: emit events for dw service
 
-        //FUTURE: this method will be a consumer, emit this function then
         // CAUTION: Not awaiting
-        this.changeAllRecordsParents(recordDeleteDTO);
+        this.updateAllRecordsParents(recordDeleteDTO);
 
         const payload = { definitionId: recordDeleteDTO.formId, id: recordDeleteDTO.recordId };
+        
         return this.clientService.deleteEntry(payload);
     }
 
-    // FUTURE: make this method a consumer which will be invoked via redis bull queue and run in a seperate process 
+
     // On form delete. mark children record's parents null
     async markAllRecordsParentsNull(formIds: number[], request: Request) {
-        formIds.forEach(async formId => {
-            const records = await this.fetchAllRecords({ formId, request });
-            records.forEach(record => {
-                record.attributes["parent"] = null;
-                // CAUTION: Not awaiting
-                this.updateRecord({
-                    id: record.id,
-                    formId,
-                    request,
-                    attributes: record.attributes,
-                    entry: record.entry
-                });
-            })
-        })
+        return this.clientService.bulkUpdateEntriesParents({
+            definitionIds: formIds,
+            parentIdToSet: null,
+            request
+        });
     }
 
-
-    // FUTURE: make this method a consumer which will be invoked via redis bull queue and run in a seperate process
     // On record delete, change the parent of its children
-    async changeAllRecordsParents(recordDTO: RecordDeleteDTO) {
+    async updateAllRecordsParents(recordDTO: RecordDeleteDTO) {
         const childrenForms = await this.relationService.getFormImidiateChildrenForm(recordDTO.formId);
-
-        childrenForms.forEach(async childFormId => {
-            const records = await this.fetchAllRecordsWhereParentId({ formId: childFormId, request: recordDTO.request, parentId: recordDTO.recordId });
-            records.forEach(record => {
-                record.attributes.parent.recordId = recordDTO.newParentIdForChildren;
-                // CAUTION: Not awaiting
-                this.updateRecord({
-                    id: record.id,
-                    formId: childFormId,
-                    request: recordDTO.request,
-                    attributes: record.attributes,
-                    entry: record.entry
-                });
-            });
+        return this.clientService.bulkUpdateEntriesParents({
+            definitionIds: childrenForms,
+            curerntParentId: recordDTO.recordId,
+            parentIdToSet: recordDTO.newParentIdForChildren,
+            request: recordDTO.request
         });
-
-        return true;
     }
 }

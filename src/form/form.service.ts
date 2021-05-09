@@ -59,8 +59,7 @@ export class FormService {
         // FUTURE: emit events for dw service
         let affectedChildren = await this.relationService.deleteFormCreateTreeForChildren(formIdDTO.formId);
         affectedChildren.forEach(async c => await this.markFormParentAsNull(affectedChildren, formIdDTO.request));
-        
-        // FUTURE: this method will be a consumer, emit this function in future
+
         // CAUTION: Not awaiting
         this.recordService.markAllRecordsParentsNull(affectedChildren, formIdDTO.request);
 
