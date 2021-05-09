@@ -59,6 +59,10 @@ export class RelationService {
         return this.repo.findNodeImidiateAncestor(formId);
     }
 
+    async getFormImidiateChildrenForm(formId: number) {
+        return this.repo.findNodeImidiateDescendant(formId);
+    }
+
     async getFormParentsCount(formId: number) {
         return this.repo.countNodeAncestors(formId);
     }

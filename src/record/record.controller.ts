@@ -1,9 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UsePipes } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { FormIdDTO } from 'src/form/form.dto';
-import { RecordDTO, RecordIdDTO, RecordUpdateDTO } from 'src/Record/Record.dto';
+import { RecordDeleteDTO, RecordDTO, RecordIdDTO, RecordSearchDTO, RecordUpdateDTO } from 'src/Record/Record.dto';
 import { RecordService } from 'src/Record/Record.service';
 import { modules, serviceName } from 'src/utils/constants.utils';
+import { OnDeleteNewParentValidatorPipe } from './pipes/on-delete-new-parent-validator.pipe';
 import { ParentValidatorPipe } from './pipes/parent-validator.pipe';
 import { RecordSchemaValidatorPipe } from './pipes/record-schema-validator.pipe';
 
@@ -12,8 +13,8 @@ export class RecordController {
     constructor(private service: RecordService) { }
 
     @MessagePattern({ service: serviceName, module: modules.record, method: "fetchAllRecords" })
-    async fetchAllRecords(@Body() formIdDTO: FormIdDTO) {
-        return await this.service.fetchAllRecords(formIdDTO);
+    async fetchAllRecords(@Body() recordSearchDTO: RecordSearchDTO) {
+        return await this.service.fetchAllRecords(recordSearchDTO);
     }
 
     @MessagePattern({ service: serviceName, module: modules.record, method: "fetchARecordById" })
@@ -36,7 +37,8 @@ export class RecordController {
     }
 
     @MessagePattern({ service: serviceName, module: modules.record, method: "deleteRecord" })
-    async deleteRecord(@Body() recordIdDTO: RecordIdDTO) {
-        return await this.service.deleteRecord(recordIdDTO);
+    @UsePipes(OnDeleteNewParentValidatorPipe)
+    async deleteRecord(@Body() recordDeleteDTO: RecordDeleteDTO) {
+        return await this.service.deleteRecord(recordDeleteDTO);
     }
 }

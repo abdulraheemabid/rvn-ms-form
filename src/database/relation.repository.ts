@@ -141,6 +141,11 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
         return tree?.parent?.formId || null;
     }
 
+    async findNodeImidiateDescendant(formId: number) {
+        const tree = await this.findNodeDescendantsTree(formId);
+        return tree.children.map(c => c.formId);
+    }
+
     // Tree methods
 
     async findNodeTrees() {

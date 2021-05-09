@@ -1,4 +1,7 @@
+import { GenericObject } from "@abdulraheemabid/rvn-nest-shared";
 import { IsNumber, IsObject, IsOptional } from "class-validator";
+import { Request } from 'express';
+import { FormIdDTO } from "src/form/form.dto";
 
 
 export class RecordParentDTO {
@@ -47,8 +50,25 @@ export class RecordUpdateDTO {
 
 export class RecordIdDTO {
     @IsNumber()
-    formId: number
+    formId: number;
 
     @IsNumber()
-    recordId: number
+    recordId: number;
+
+    request?: Request;
+}
+
+export class RecordSearchDTO extends FormIdDTO {
+    @IsObject()
+    @IsOptional()
+    searchOptions?: GenericObject;
+    @IsNumber()
+    @IsOptional()
+    parentId?: number;
+}
+
+export class RecordDeleteDTO extends RecordIdDTO {
+    @IsOptional()
+    @IsNumber()
+    newParentIdForChildren?: number;
 }

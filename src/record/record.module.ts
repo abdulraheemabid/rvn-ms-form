@@ -8,6 +8,7 @@ import { RecordService } from './record.service';
 @Module({
   controllers: [RecordController],
   providers: [RecordService, FormService],
-  imports: [DasClientModule, RelationModule]
+  imports: [DasClientModule, RelationModule],
+  exports: [RecordService]
 })
 export class RecordModule { }
