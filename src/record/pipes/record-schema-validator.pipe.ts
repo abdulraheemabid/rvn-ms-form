@@ -1,4 +1,4 @@
-import { FieldTypeEnum } from '@abdulraheemabid/rvn-nest-shared';
+import { FieldTypeEnum, isNullOrUndefined } from '@abdulraheemabid/rvn-nest-shared';
 import { ArgumentMetadata, HttpException, HttpStatus, Injectable, PipeTransform } from '@nestjs/common';
 import { FormService } from 'src/form/form.service';
 import { RecordDTO, RecordUpdateDTO } from '../record.dto';
@@ -30,7 +30,7 @@ export class RecordSchemaValidatorPipe implements PipeTransform {
           throw getRCPException({ message: `Field id ${key} not found in form's fields`, statusCode: HttpStatus.NOT_FOUND });
 
         // field type match
-        else if (!this.isValueOfSameTypeAsInDefinition(key, entry[key], fieldOfKey))
+        else if (!isNullOrUndefined(entry[key]) && !this.isValueOfSameTypeAsInDefinition(key, entry[key], fieldOfKey))
           throw getRCPException({ message: `Value of field id ${key} doesnt match type defined in form '${fieldOfKey.type}'`, statusCode: HttpStatus.NOT_ACCEPTABLE })
       });
 
