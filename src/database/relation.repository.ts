@@ -113,7 +113,7 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
 
         // Delete all from closure where either ancestor or descendant id is id
         await this.createQueryBuilder()
-            .softDelete()
+            .delete()
             .from(closureTableName)
             .where(`${ancestorColumn} = :id or ${descendantColumn} = :id`, { id })
             .execute();
@@ -127,7 +127,7 @@ export class RelationRepository extends TreeRepository<RelationEntity> implement
 
         // Delete formId record from main
         await this.createQueryBuilder()
-            .softDelete()
+            .delete()
             .from(tableName)
             .where(`${primaryColumn} = :id`, { id })
             .execute();
