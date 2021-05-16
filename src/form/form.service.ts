@@ -16,6 +16,10 @@ export class FormService {
         return this.dasClient.fetchAllDefinitions()
     }
 
+    async fetchAllFormTrees() {
+        return this.relationService.getFormTrees();
+    }
+
     async fetchFormById(formIdDTO: FormIdDTO) {
         const payload = { definitionId: formIdDTO.formId };
         return this.dasClient.fetchDefinitionById(payload);

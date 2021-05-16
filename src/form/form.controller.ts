@@ -18,6 +18,11 @@ export class FormController {
         return await this.service.fetchAllForms();
     }
 
+    @MessagePattern({ service: serviceName, module: modules.form, method: "fetchAllFormTrees" })
+    async fetchAllFormTrees() {
+        return await this.service.fetchAllFormTrees();
+    }
+
     @MessagePattern({ service: serviceName, module: modules.form, method: "fetchFormById" })
     async fetchFormById(@Body() formIdDTO: FormIdDTO) {
         return await this.service.fetchFormById(formIdDTO);
