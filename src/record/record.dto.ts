@@ -64,7 +64,7 @@ export class RecordSearchDTO extends FormIdDTO {
     searchOptions?: GenericObject;
     @IsNumber()
     @IsOptional()
-    parentId?: number;
+    parentRecordId?: number;
 }
 
 export class RecordDeleteDTO extends RecordIdDTO {

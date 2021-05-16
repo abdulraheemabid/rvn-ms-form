@@ -3,21 +3,19 @@ import { DasClientService } from 'src/das-client/das-client.service';
 import { RecordDeleteDTO, RecordDTO, RecordIdDTO, RecordSearchDTO, RecordUpdateDTO } from './record.dto';
 import { Request } from 'express';
 import { RelationService } from 'src/relation/relation.service';
+import { EntrySearchDTO } from '@abdulraheemabid/rvn-nest-shared';
 
 @Injectable()
 export class RecordService {
     constructor(private clientService: DasClientService, private relationService: RelationService) { }
 
     async fetchAllRecords(recordSearchDTO: RecordSearchDTO) {
-        const payload = { definitionId: recordSearchDTO.formId, searchOptions: recordSearchDTO.searchOptions };
+        const payload: EntrySearchDTO = {
+            definitionId: recordSearchDTO.formId,
+            searchOptions: recordSearchDTO.searchOptions,
+            parentEntryId: recordSearchDTO.parentRecordId
+        };
         return this.clientService.fetchAllEntries(payload);
-    }
-
-    async fetchAllRecordsWhereParentId(recordSearchDTO: RecordSearchDTO) {
-        // TODO: Optimize: redundant call. fix this in a single call
-        const payload = { definitionId: recordSearchDTO.formId, searchOptions: recordSearchDTO.searchOptions };
-        const records = await this.clientService.fetchAllEntries(payload);
-        return records.filter(r => r?.attributes?.parent?.recordId === recordSearchDTO.parentId);
     }
 
     async fetchRecordById(recordIdDTO: RecordIdDTO) {
@@ -54,7 +52,7 @@ export class RecordService {
         this.updateAllRecordsParents(recordDeleteDTO);
 
         const payload = { definitionId: recordDeleteDTO.formId, id: recordDeleteDTO.recordId };
-        
+
         return this.clientService.deleteEntry(payload);
     }
 
