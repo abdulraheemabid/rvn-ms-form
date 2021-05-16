@@ -67,6 +67,10 @@ export class FormService {
         return this.dasClient.deleteDefinition(payload);
     }
 
+    async fetchFormDirectChildren(formIdDTO: FormIdDTO) {
+        return this.relationService.getFormImidiateChildrenForm(formIdDTO.formId);
+    }
+
     private async markFormParentAsNull(formIds: number[], request: Request) {
         let promises = [];
         formIds.forEach(id => {
@@ -85,4 +89,5 @@ export class FormService {
 
         return true;
     }
+
 }

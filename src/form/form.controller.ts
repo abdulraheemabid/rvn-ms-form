@@ -23,6 +23,11 @@ export class FormController {
         return await this.service.fetchFormById(formIdDTO);
     }
 
+    @MessagePattern({ service: serviceName, module: modules.form, method: "fetchFormDirectChildren" })
+    async fetchFormDirectChildren(@Body() formIdDTO: FormIdDTO) {
+        return await this.service.fetchFormDirectChildren(formIdDTO);
+    }
+
     @MessagePattern({ service: serviceName, module: modules.form, method: "createForm" })
     @UsePipes(DuplicateFormValidatorPipe)
     @UsePipes(DuplicateFieldValidatorPipe)
