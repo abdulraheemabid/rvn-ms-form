@@ -64,8 +64,7 @@ export class FormService {
         let affectedChildren = await this.relationService.deleteFormCreateTreeForChildren(formIdDTO.formId);
         affectedChildren.forEach(async c => await this.markFormParentAsNull(affectedChildren, formIdDTO.request));
 
-        // CAUTION: Not awaiting
-        this.recordService.markAllRecordsParentsNull(affectedChildren, formIdDTO.request);
+        await this.recordService.markAllRecordsParentsNull(affectedChildren, formIdDTO.request);
 
         const payload = { definitionId: formIdDTO.formId };
         return this.dasClient.deleteDefinition(payload);
