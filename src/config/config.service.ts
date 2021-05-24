@@ -2,6 +2,11 @@ import { Injectable } from '@nestjs/common';
 import * as nconf from 'nconf';
 import * as path from 'path';
 
+/**
+ * Reads config.json file from root folder. 
+ * 
+ * Add methods and interfaces of your config properties here to obtain them and use in app.
+ */
 @Injectable()
 export class ConfigService {
     private readonly msCallTimeout: number;

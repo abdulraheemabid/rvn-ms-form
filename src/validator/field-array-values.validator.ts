@@ -2,6 +2,10 @@ import { FieldTypeEnum } from '@abdulraheemabid/rvn-nest-shared';
 import { Injectable } from '@nestjs/common';
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 
+/**
+ * Validates for field type "singleselect" && "multiselect" that the entered value is from the allowed values
+ * and not duplicate and is string
+ */
 @Injectable()
 @ValidatorConstraint({ name: 'FieldArrayValuesValidator', async: false })
 export class FieldArrayValuesValidator implements ValidatorConstraintInterface {

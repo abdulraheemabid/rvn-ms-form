@@ -5,6 +5,10 @@ import { getRCPException } from 'src/utils/exception.util';
 import { RecordDTO, RecordUpdateDTO } from '../Record.dto';
 import { RecordService } from '../Record.service';
 
+/**
+ * Validate when a record is bieng created or updated of a form which is a child, then record
+ * must contain a valid parentId. 
+ */
 @Injectable()
 export class ParentValidatorPipe implements PipeTransform {
   constructor(private recordService: RecordService, private relationService: RelationService) { }

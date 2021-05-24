@@ -5,6 +5,10 @@ import { RecordDTO, RecordUpdateDTO } from '../record.dto';
 import * as moment from 'moment';
 import { getRCPException } from 'src/utils/exception.util';
 
+/**
+ * Validates if the entered record is following the form definition. If a required field is not sent 
+ * or any field doesnt match the field type etc, it throws a relevant error.
+ */
 @Injectable()
 export class RecordSchemaValidatorPipe implements PipeTransform {
   constructor(private formService: FormService) { }

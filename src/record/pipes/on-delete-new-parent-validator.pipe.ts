@@ -4,10 +4,13 @@ import { RelationService } from 'src/relation/relation.service';
 import { getRCPException } from 'src/utils/exception.util';
 import { RecordService } from '../Record.service';
 
+/**
+ * Validates when record is being deleted, that a new valid parent record id has been provided.
+ */
 @Injectable()
 export class OnDeleteNewParentValidatorPipe implements PipeTransform {
   constructor(private relationSevice: RelationService, private recordService: RecordService) { }
-  async transform(value: RecordDeleteDTO, metadata: ArgumentMetadata) {
+  async transform(value: RecordDeleteDTO, metadata: ArgumentMetadata): Promise<RecordDeleteDTO> {
 
     const childrenCount = await this.relationSevice.getFormChildrenCount(value.formId);
 

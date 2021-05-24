@@ -1,6 +1,9 @@
 import { Injectable } from "@nestjs/common/decorators";
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 
+/**
+ * Validates if there are no duplicate field Ids in record
+ */
 @Injectable()
 @ValidatorConstraint({ name: 'DuplicateFieldIdInRecordValidator', async: false })
 export class DuplicateFieldIdInRecordValidator implements ValidatorConstraintInterface {

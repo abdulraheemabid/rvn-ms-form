@@ -62,6 +62,7 @@ export class RecordSearchDTO extends FormIdDTO {
     @IsObject()
     @IsOptional()
     searchOptions?: GenericObject;
+    
     @IsNumber()
     @IsOptional()
     parentRecordId?: number;

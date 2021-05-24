@@ -1,6 +1,9 @@
 import { Injectable } from "@nestjs/common/decorators";
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from "class-validator";
 
+/**
+ * Validates if there are any duplicates in an array
+ */
 @Injectable()
 @ValidatorConstraint({ name: 'DuplicateValuesInArrayValidator', async: false })
 export class DuplicateValuesInArrayValidator implements ValidatorConstraintInterface {

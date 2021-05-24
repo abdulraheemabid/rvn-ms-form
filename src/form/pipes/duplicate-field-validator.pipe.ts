@@ -1,13 +1,16 @@
-import { ArgumentMetadata, HttpException, HttpStatus, Injectable, PipeTransform } from '@nestjs/common';
+import { ArgumentMetadata, HttpStatus, Injectable, PipeTransform } from '@nestjs/common';
 import { getRCPException } from 'src/utils/exception.util';
-import { FormDTO, FormUpdateDTO } from '../form.dto';
+import { FormUpdateDTO } from '../form.dto';
 import { FormService } from '../form.service';
 
+/**
+ * It validates if there are fields with duplicate names, which is not allowed
+ */
 @Injectable()
 export class DuplicateFieldValidatorPipe implements PipeTransform {
   constructor(private formService: FormService) { }
 
-  async transform(value: FormUpdateDTO, metadata: ArgumentMetadata) {
+  async transform(value: FormUpdateDTO, metadata: ArgumentMetadata): Promise<FormUpdateDTO> {
 
     if (value.formId && value.fields) {
       // checking if new field is bieng created with a same name as existing;

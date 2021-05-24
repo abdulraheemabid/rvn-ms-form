@@ -1,3 +1,24 @@
+## Raven Forms
+rvn-ms-forms is a part of Raven framework. Its responsible for creating dynamic forms and managing its records.
+It uses rvn-ms-das form managing form definitions and entries.
+It manages rvn-forms db schema to manage form relations  
+If we need to add DB queries (simple or complex) for form relations, it will be done in this microservice.
+
+### Validations
+Since basic validation for creating entries and definitions exists in DAS microservice, we add business validation in this microservice.
+
+Business logic validations e.g: Form with exisitng name cant be created, Entered record follows the form definition, at least having on field in a form etc.
+
+### Setup
+1. Run `npm install`
+2. Update `ormconfig.json` for database connection.
+3. Make sure `rvn-ms-das` is up and running, and configure its port in das-client.module.ts.
+3. Run `npm run start`
+
+### Misc.
+* Run `npx @compodoc/compodoc -p tsconfig.json -s` to generate documentation
+* See `package.json`'s script section for different options to run / test / build the app.
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>

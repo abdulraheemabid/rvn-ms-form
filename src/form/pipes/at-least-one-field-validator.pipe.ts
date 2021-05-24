@@ -4,11 +4,16 @@ import { FormUpdateDTO } from 'src/form/form.dto';
 import { FormService } from 'src/form/form.service';
 import { getRCPException } from 'src/utils/exception.util';
 
+/**
+ * Validates that there should be atleast on field in form definition
+ * It fetches form existing definition and calculates how many are to be deleted and updated,
+ * and based on that there should be atleast one field remaining otherwise throws error
+ */
 @Injectable({ scope: Scope.REQUEST })
 export class AtLeastOneFieldValidatorPipe implements PipeTransform {
   constructor(private formService: FormService) { }
 
-  async transform(value: FormUpdateDTO, metadata: ArgumentMetadata) {
+  async transform(value: FormUpdateDTO, metadata: ArgumentMetadata): Promise<FormUpdateDTO> {
 
     if (value.formId && value.fields) {
       let form = await this.formService.fetchFormById({ formId: value.formId });

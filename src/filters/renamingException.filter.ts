@@ -1,7 +1,12 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { Observable } from 'rxjs';
 
-
+/**
+ * This microservice is dependant on DAS microservice. So whenever DAS returns an error,
+ * It could contain words like definition and entry which are used internally.
+ * Since form service should rethrow the error from DAS, but these terminologies should be renamed.
+ * This exception filter does this.
+ */
 @Catch()
 export class RenamingExceptionFilter implements ExceptionFilter {
 

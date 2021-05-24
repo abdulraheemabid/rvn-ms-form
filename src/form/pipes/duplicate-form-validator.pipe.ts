@@ -3,6 +3,9 @@ import { FormDTO, FormUpdateDTO } from 'src/form/form.dto';
 import { FormService } from 'src/form/form.service';
 import { getRCPException } from 'src/utils/exception.util';
 
+/**
+ * It validates if form with same name doesnt already exist when creating a new form.
+ */
 @Injectable()
 export class DuplicateFormValidatorPipe implements PipeTransform {
   constructor(private formService: FormService) { }

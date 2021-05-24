@@ -11,6 +11,11 @@ import { ChildRelationType } from 'src/utils/constants.utils';
 export class FormParentDTO {
     @IsNumber()
     formId: number;
+
+    /**
+     * Validation
+     * is either "one-to-one" or "many-to-one"
+     */
     @IsIn(["one-to-one", "many-to-one"])
     relationType: ChildRelationType;
 }
@@ -26,6 +31,9 @@ export class FormDTO {
     @IsString()
     name: string;
 
+    /**
+     * Type should be array of FormFieldDTO
+     */
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => FormFieldDTO)
@@ -48,6 +56,9 @@ export class FormUpdateDTO {
     @IsString()
     name?: string;
 
+     /**
+     * Type should be array of FormFieldDTO
+     */
     @IsOptional()
     @IsArray()
     @ValidateNested({ each: true })
