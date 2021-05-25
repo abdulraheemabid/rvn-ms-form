@@ -12,7 +12,7 @@ Business logic validations e.g: Form with exisitng name cant be created, Entered
 ### Setup
 1. Run `npm install`
 2. Update `ormconfig.json` for database connection.
-3. Make sure `rvn-ms-das` is up and running, and configure its port in das-client.module.ts.
+3. Make sure `rvn-ms-das` is up and running, and configure its port in das-client.module.ts. NOTE: *This will not be needeed in future when service discovery is in place*.
 3. Run `npm run start`
 
 ### Misc.
