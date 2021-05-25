@@ -1,7 +1,7 @@
 ## Raven Forms
-rvn-ms-forms is a part of Raven framework. Its responsible for creating dynamic forms and managing its records.
-It uses rvn-ms-das form managing form definitions and entries.
-It manages rvn-forms db schema to manage form relations  
+`rvn-ms-forms` is a part of Raven framework. Its responsible for creating dynamic forms and managing its records.
+It uses `rvn-ms-das` form managing form definitions and entries.
+It manages `forms` db schema to manage form relations  
 If we need to add DB queries (simple or complex) for form relations, it will be done in this microservice.
 
 ### Validations
