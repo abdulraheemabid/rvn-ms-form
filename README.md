@@ -7,7 +7,7 @@ If we need to add DB queries (simple or complex) for form relations, it will be 
 ### Validations
 Since basic validation for creating entries and definitions exists in DAS microservice, we add business validation in this microservice.
 
-Business logic validations e.g: Form with exisitng name cant be created, Entered record follows the form definition, at least having on field in a form etc.
+Business logic validations e.g: Form with exisitng name cant be created, Entered record follows the form definition, at least having one field in a form etc. See the generarted compodoc documentation for details. Validations are done using pipes and class-validator so look out for documentation for DTOs, pipes and controllers to understand which validations are applied
 
 ### Setup
 1. Run `npm install`
