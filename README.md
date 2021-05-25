@@ -16,7 +16,7 @@ Business logic validations e.g: Form with exisitng name cant be created, Entered
 3. Run `npm run start`
 
 ### Misc.
-* Run `npx @compodoc/compodoc -p tsconfig.json -s` to generate documentation
+* Run `npm run docs:serve` to generate and serve documentation
 * See `package.json`'s script section for different options to run / test / build the app.
 
 <p align="center">
