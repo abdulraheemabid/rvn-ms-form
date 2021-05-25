@@ -1,6 +1,6 @@
 {
     "name": "rvn-ms-form",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "",
     "author": "",
     "private": true,
@@ -23,7 +23,7 @@
         "docs:serve": "npx @compodoc/compodoc -p tsconfig.json -s"
     },
     "dependencies": {
-        "@abdulraheemabid/rvn-nest-shared": "^0.1.11",
+        "@abdulraheemabid/rvn-nest-shared": "^0.2.0",
         "@nestjs/common": "^7.6.15",
         "@nestjs/core": "^7.6.13",
         "@nestjs/microservices": "^7.6.15",
